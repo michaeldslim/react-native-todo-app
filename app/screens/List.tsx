@@ -1,22 +1,25 @@
 import { View, Text, Button, StyleSheet, TextInput } from 'react-native';
 import React, { useEffect, useState } from 'react';
-import { FIRESTORE_DB } from '../../firebaseConfig';
-import { addDoc, collection } from 'firebase/firestore';
-
+import { fetchTodos, addTodo } from '../service/firebaseService';
 import { ToDo } from './types';
-
-const todosCollection = collection(FIRESTORE_DB, 'todos');
 
 const List = ({ navigation }: any) => {
  const [newTodo, setNewTodo] = useState<string>('');
+ const [todos, setTodos] = useState<ToDo[]>([]);
 
-  const addTodo = async (title: string) => {
-    await addDoc(todosCollection, { title, completed: false });
-  };
+  useEffect(() => {
+    const loadTodos = async () => {
+      const todos = await fetchTodos();
+      setTodos(todos);
+    };
+    loadTodos().then();
+  }, []);
 
   const handleAddTodo = async () => {
     if (newTodo.trim()) {
       await addTodo(newTodo);
+      const todos = await fetchTodos();
+      setTodos(todos);
       setNewTodo('');
     }
   };
