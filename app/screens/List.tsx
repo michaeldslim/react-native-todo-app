@@ -4,8 +4,8 @@ import { fetchTodos, addTodo } from '../service/firebaseService';
 import { ToDo } from './types';
 
 const List = ({ navigation }: any) => {
- const [newTodo, setNewTodo] = useState<string>('');
- const [todos, setTodos] = useState<ToDo[]>([]);
+  const [newTodo, setNewTodo] = useState<string>('');
+  const [todos, setTodos] = useState<ToDo[]>([]);
 
   useEffect(() => {
     const loadTodos = async () => {
@@ -33,7 +33,11 @@ const List = ({ navigation }: any) => {
           onChangeText={(text: string) => setNewTodo(text)}
           value={newTodo}
         />
-        <Button title={'Add todo'} onPress={handleAddTodo} disabled={newTodo === ''} />
+        <Button
+          title={'Add todo'}
+          onPress={handleAddTodo}
+          disabled={newTodo === ''}
+        />
       </View>
     </View>
   );
@@ -56,6 +60,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 5,
     padding: 10,
-    backgroundColor: '#ffffff'
-  }
+    backgroundColor: '#ffffff',
+  },
 });
