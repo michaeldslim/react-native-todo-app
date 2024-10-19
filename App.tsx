@@ -1,5 +1,5 @@
-import { createNativeStackNavigator} from '@react-navigation/native-stack';
-import { NavigationContainer} from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { NavigationContainer } from '@react-navigation/native';
 import List from './app/screens/List';
 
 const Stack = createNativeStackNavigator();
