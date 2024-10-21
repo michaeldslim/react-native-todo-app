@@ -1,15 +1,6 @@
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { NavigationContainer } from '@react-navigation/native';
-import List from './app/screens/List';
-
-const Stack = createNativeStackNavigator();
+import React from 'react';
+import RootNavigator from './app/navigation/RootNavigator';
 
 export default function App() {
-  return (
-    <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen name={'My Todos'} component={List} />
-      </Stack.Navigator>
-    </NavigationContainer>
-  );
+  return <RootNavigator />;
 }

@@ -7,7 +7,7 @@ import {
   updateDoc,
   deleteDoc,
 } from 'firebase/firestore';
-import { ToDo } from '../screens/types';
+import { Todo } from '../screens/types';
 
 const todosCollection = collection(FIRESTORE_DB, 'todos');
 
@@ -16,7 +16,7 @@ export const fetchTodos = async () => {
   return snapShot.docs.map((doc) => ({
     id: doc.id,
     ...doc.data(),
-  })) as ToDo[];
+  })) as Todo[];
 };
 
 export const addTodo = async (title: string) => {
