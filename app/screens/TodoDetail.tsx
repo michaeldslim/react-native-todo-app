@@ -1,12 +1,17 @@
-import { View, Button, StyleSheet, TextInput, Text } from 'react-native';
-import React, { useEffect, useState } from 'react';
 import {
-  fetchTodos,
+  View,
+  StyleSheet,
+  TextInput,
+  Text,
+  TouchableOpacity,
+  TextStyle,
+} from 'react-native';
+import React, { useState } from 'react';
+import {
   deleteTodo,
   updateTodo,
   toggleStatus,
 } from '../service/firebaseService';
-import { Todo } from './types';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackList } from '../navigation/RootNavigator';
 
@@ -28,7 +33,7 @@ const TodoDetail = ({ route, navigation }: TodoDetailProps) => {
   };
 
   const handleToggleStatus = async () => {
-    await toggleStatus(todo.id, todo.completed);
+    await toggleStatus(todo.id, !todo.completed);
     navigation.goBack();
   };
 
@@ -40,17 +45,40 @@ const TodoDetail = ({ route, navigation }: TodoDetailProps) => {
           value={editTitle}
           onChangeText={setEditTitle}
           placeholder="Edit Todo Title"
+          maxLength={200}
+          multiline={true}
         />
-        <Button
-          title="Update Todo"
-          onPress={handleUpdateTodo}
-          disabled={editTitle === todo.title}
-        />
-        <Button title="Delete Todo" onPress={handleDeleteTodo} />
-        <Button
-          title={todo.completed ? 'Mark as Incomplete' : 'Mark as Complete'}
-          onPress={handleToggleStatus}
-        />
+        <View style={styles.buttonContainer}>
+          {editTitle === todo.title ? (
+            <TouchableOpacity
+              style={[styles.button, styles.disabledButton]}
+              disabled={true}
+            >
+              <Text style={styles.buttonText}>Update Todo</Text>
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity
+              style={[styles.button, styles.updateButton]}
+              onPress={handleUpdateTodo}
+            >
+              <Text style={styles.buttonText}>Update Todo</Text>
+            </TouchableOpacity>
+          )}
+          <TouchableOpacity
+            style={[styles.button, styles.deleteButton]}
+            onPress={handleDeleteTodo}
+          >
+            <Text style={styles.buttonText}>Delete Todo</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.button, styles.toggleButton]}
+            onPress={handleToggleStatus}
+          >
+            <Text style={styles.buttonText}>
+              {todo.completed ? 'Mark as Incomplete' : 'Mark as Complete'}
+            </Text>
+          </TouchableOpacity>
+        </View>
       </View>
     </View>
   );
@@ -70,6 +98,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   input: {
+    fontSize: 16,
     padding: 10,
     borderWidth: 1,
     borderColor: '#ccc',
@@ -86,12 +115,34 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     width: '100%',
   },
-  completed: {
-    textDecorationLine: 'line-through',
-    color: 'gray',
+  buttonContainer: {
+    marginTop: 10,
+    width: '100%',
   },
-  notCompleted: {
-    color: 'black',
+  button: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 15,
+    marginBottom: 10,
+    borderRadius: 10,
+    width: '100%',
+  },
+  buttonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
+  } as TextStyle,
+  updateButton: {
+    backgroundColor: '#2196f3',
+  },
+  disabledButton: {
+    backgroundColor: '#D8D8D8',
+  },
+  deleteButton: {
+    backgroundColor: '#F44336',
+  },
+  toggleButton: {
+    backgroundColor: '#4CAF50',
   },
 });
 

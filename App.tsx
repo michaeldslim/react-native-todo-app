@@ -1,6 +1,8 @@
 import React from 'react';
 import RootNavigator from './app/navigation/RootNavigator';
 
-export default function App() {
+const App: React.FC = () => {
   return <RootNavigator />;
-}
+};
+
+export default App;

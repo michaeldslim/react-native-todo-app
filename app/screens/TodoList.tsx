@@ -1,11 +1,11 @@
 import {
   View,
-  Button,
   StyleSheet,
   TextInput,
   FlatList,
   TouchableOpacity,
   Text,
+  TextStyle,
 } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { fetchTodos, addTodo } from '../service/firebaseService';
@@ -46,12 +46,26 @@ const TodoList = ({ navigation }: TodoListProps) => {
           placeholder={'Add new todo'}
           onChangeText={(text: string) => setNewTodo(text)}
           value={newTodo}
+          maxLength={200}
+          multiline={true}
         />
-        <Button
-          title={'Add todo'}
-          onPress={handleAddTodo}
-          disabled={newTodo === ''}
-        />
+        <View style={styles.buttonContainer}>
+          {newTodo === '' ? (
+            <TouchableOpacity
+              style={[styles.button, styles.disabledButton]}
+              disabled={true}
+            >
+              <Text style={styles.buttonText}>Add Todo</Text>
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity
+              style={[styles.button, styles.addButton]}
+              onPress={handleAddTodo}
+            >
+              <Text style={styles.buttonText}>Add Todo</Text>
+            </TouchableOpacity>
+          )}
+        </View>
         <FlatList
           data={todos}
           keyExtractor={(item) => item.id}
@@ -67,10 +81,12 @@ const TodoList = ({ navigation }: TodoListProps) => {
                 >
                   {item.title}
                 </Text>
-                <Button
-                  title={'Details'}
+                <TouchableOpacity
+                  style={styles.detailButton}
                   onPress={() => navigation.navigate('Detail', { todo: item })}
-                />
+                >
+                  <Text style={styles.buttonText}>Details</Text>
+                </TouchableOpacity>
               </View>
             </TouchableOpacity>
           )}
@@ -94,6 +110,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   input: {
+    fontSize: 16,
     padding: 10,
     borderWidth: 1,
     borderColor: '#ccc',
@@ -105,18 +122,52 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     backgroundColor: '#f9f9f9',
-    padding: 15,
+    padding: 5,
     borderRadius: 5,
-    marginTop: 10,
-    marginBottom: 10,
+    marginTop: 5,
+    marginBottom: 5,
     width: '100%',
   },
   completed: {
     textDecorationLine: 'line-through',
     color: 'gray',
+    fontSize: 16,
+    width: '80%',
   },
   notCompleted: {
     color: 'black',
+    fontSize: 16,
+    width: '80%',
+  },
+  buttonContainer: {
+    marginTop: 10,
+    width: '100%',
+  },
+  button: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 15,
+    marginBottom: 10,
+    borderRadius: 10,
+    width: '100%',
+  },
+  buttonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
+  } as TextStyle,
+  disabledButton: {
+    backgroundColor: '#D8D8D8',
+  },
+  addButton: {
+    backgroundColor: '#2196f3',
+  },
+  detailButton: {
+    backgroundColor: '#2196f3',
+    height: 40,
+    borderRadius: 10,
+    paddingVertical: 8,
+    paddingHorizontal: 10,
   },
 });
 
