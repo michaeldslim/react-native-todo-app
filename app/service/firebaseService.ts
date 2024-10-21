@@ -38,6 +38,6 @@ export const toggleStatus = async (id: string, completed: boolean) => {
 };
 
 export const deleteTodo = async (id: string) => {
-  const editDoc = doc(FIRESTORE_DB, id);
+  const editDoc = doc(FIRESTORE_DB, 'todos', id);
   await deleteDoc(editDoc);
 };
