@@ -1,11 +1,4 @@
-import {
-  View,
-  StyleSheet,
-  TextInput,
-  Text,
-  TouchableOpacity,
-  TextStyle,
-} from 'react-native';
+import { View, StyleSheet, TextInput, TextStyle } from 'react-native';
 import React, { useState } from 'react';
 import {
   deleteTodo,
