@@ -1,11 +1,4 @@
-import {
-  View,
-  StyleSheet,
-  TextInput,
-  Text,
-  TouchableOpacity,
-  TextStyle,
-} from 'react-native';
+import { View, StyleSheet, TextInput, TextStyle } from 'react-native';
 import React, { useState } from 'react';
 import {
   deleteTodo,
@@ -14,6 +7,8 @@ import {
 } from '../service/firebaseService';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackList } from '../navigation/RootNavigator';
+import { TodoUpdateButton } from '../components/todoUpdateButton';
+import { TodoActionButton } from '../components/todoActionButton';
 
 type TodoDetailProps = NativeStackScreenProps<RootStackList, 'Detail'>;
 
@@ -50,34 +45,31 @@ const TodoDetail = ({ route, navigation }: TodoDetailProps) => {
         />
         <View style={styles.buttonContainer}>
           {editTitle === todo.title ? (
-            <TouchableOpacity
-              style={[styles.button, styles.disabledButton]}
+            <TodoUpdateButton
               disabled={true}
-            >
-              <Text style={styles.buttonText}>Update Todo</Text>
-            </TouchableOpacity>
+              styles={styles}
+              text="Update Todo"
+            />
           ) : (
-            <TouchableOpacity
-              style={[styles.button, styles.updateButton]}
+            <TodoUpdateButton
+              disabled={false}
+              styles={styles}
               onPress={handleUpdateTodo}
-            >
-              <Text style={styles.buttonText}>Update Todo</Text>
-            </TouchableOpacity>
+              text="Update Todo"
+            />
           )}
-          <TouchableOpacity
-            style={[styles.button, styles.deleteButton]}
+          <TodoActionButton
+            styles={[styles.button, styles.deleteButton]}
             onPress={handleDeleteTodo}
-          >
-            <Text style={styles.buttonText}>Delete Todo</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[styles.button, styles.toggleButton]}
+            text="Delete Todo"
+            textStyles={[styles.buttonText]}
+          />
+          <TodoActionButton
+            styles={[styles.button, styles.toggleButton]}
             onPress={handleToggleStatus}
-          >
-            <Text style={styles.buttonText}>
-              {todo.completed ? 'Mark as Incomplete' : 'Mark as Complete'}
-            </Text>
-          </TouchableOpacity>
+            text={todo.completed ? 'Mark as Incomplete' : 'Mark as Complete'}
+            textStyles={[styles.buttonText]}
+          />
         </View>
       </View>
     </View>
