@@ -160,8 +160,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#f9f9f9',
     padding: 5,
     borderRadius: 5,
-    marginTop: 5,
-    marginBottom: 5,
+    marginTop: 2,
+    marginBottom: 2,
     width: '100%',
   },
   completed: {
@@ -171,9 +171,10 @@ const styles = StyleSheet.create({
     width: '80%',
   },
   notCompleted: {
+    alignSelf: 'center',
     color: 'black',
     fontSize: 16,
-    width: '80%',
+    width: '85%',
   },
   buttonContainer: {
     marginTop: 10,
@@ -182,14 +183,14 @@ const styles = StyleSheet.create({
   button: {
     alignItems: 'center',
     justifyContent: 'center',
-    padding: 15,
+    padding: 10,
     marginBottom: 10,
     borderRadius: 10,
     width: '100%',
   },
   buttonText: {
     color: 'white',
-    fontSize: 16,
+    fontSize: 13,
     fontWeight: 'bold',
   } as TextStyle,
   disabledButton: {
@@ -200,10 +201,10 @@ const styles = StyleSheet.create({
   },
   detailButton: {
     backgroundColor: '#2196f3',
-    height: 40,
+    height: 30,
     borderRadius: 10,
-    paddingVertical: 8,
-    paddingHorizontal: 10,
+    paddingVertical: 6,
+    paddingHorizontal: 6,
   },
   pickerContainer: {
     marginBottom: 10,
