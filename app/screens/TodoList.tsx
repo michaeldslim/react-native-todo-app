@@ -78,21 +78,16 @@ const TodoList = ({ navigation }: TodoListProps) => {
           />
         </View>
         <View style={styles.buttonContainer}>
-          {todo === '' ? (
-            <TouchableOpacity
-              style={[styles.button, styles.disabledButton]}
-              disabled={true}
-            >
-              <Text style={styles.buttonText}>Add Todo</Text>
-            </TouchableOpacity>
-          ) : (
-            <TouchableOpacity
-              style={[styles.button, styles.addButton]}
-              onPress={handleAddTodo}
-            >
-              <Text style={styles.buttonText}>Add Todo</Text>
-            </TouchableOpacity>
-          )}
+          <TouchableOpacity
+            style={[
+              styles.button,
+              todo === '' ? styles.disabledButton : styles.addButton,
+            ]}
+            disabled={todo === ''}
+            onPress={todo !== '' ? handleAddTodo : () => {}}
+          >
+            <Text style={styles.buttonText}>Add Todo</Text>
+          </TouchableOpacity>
         </View>
         <FlatList
           data={todos}
