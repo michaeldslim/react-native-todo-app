@@ -115,6 +115,7 @@ const TodoList = ({ navigation }: TodoListProps) => {
               </View>
             </TouchableOpacity>
           )}
+          contentContainerStyle={styles.listContent}
         />
       </View>
     </View>
@@ -123,16 +124,16 @@ const TodoList = ({ navigation }: TodoListProps) => {
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
     marginHorizontal: 10,
   },
+  listContent: {
+    paddingBottom: 16,
+  },
   form: {
+    flex: 1,
     marginVertical: 10,
     flexDirection: 'column',
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 20,
   },
   activeInput: {
     fontSize: 16,

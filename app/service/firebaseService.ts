@@ -6,13 +6,19 @@ import {
   doc,
   updateDoc,
   deleteDoc,
+  query,
+  orderBy,
 } from 'firebase/firestore';
 import { Todo } from '../screens/types';
 
 const todosCollection = collection(FIRESTORE_DB, 'todos');
 
 export const fetchTodos = async () => {
-  const snapShot = await getDocs(todosCollection);
+  const q = query(
+    collection(FIRESTORE_DB, 'todos'),
+    orderBy('createdAt', 'desc'),
+  );
+  const snapShot = await getDocs(q);
   return snapShot.docs.map((doc) => ({
     id: doc.id,
     ...doc.data(),
