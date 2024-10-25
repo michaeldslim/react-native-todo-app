@@ -7,6 +7,7 @@ import {
   Text,
   TextStyle,
 } from 'react-native';
+import { Picker } from '@react-native-picker/picker';
 import React, { useEffect, useState } from 'react';
 import { fetchTodos, addTodo } from '../service/firebaseService';
 import { Todo } from './types';
@@ -16,10 +17,13 @@ import { useIsFocused } from '@react-navigation/native';
 
 type TodoListProps = NativeStackScreenProps<RootStackList, 'List'>;
 
+const categories = ['Select an option', 'Work', 'Home', 'Shopping', 'Others'];
+
 const TodoList = ({ navigation }: TodoListProps) => {
   const isFocused = useIsFocused();
-  const [newTodo, setNewTodo] = useState<string>('');
+  const [title, setTitle] = useState<string>('');
   const [todos, setTodos] = useState<Todo[]>([]);
+  const [category, setCategory] = useState<string>('Select an option');
 
   useEffect(() => {
     const loadTodos = async () => {
@@ -30,27 +34,51 @@ const TodoList = ({ navigation }: TodoListProps) => {
   }, [isFocused]);
 
   const handleAddTodo = async () => {
-    if (newTodo.trim()) {
-      await addTodo(newTodo);
+    if (title.trim() && category) {
+      const todo: Omit<Todo, 'id'> = {
+        title,
+        completed: false,
+        createdAt: new Date(),
+        category,
+      };
+      await addTodo(todo);
       const todos = await fetchTodos();
       setTodos(todos);
-      setNewTodo('');
+      setTitle('');
+      setCategory('Select an option');
     }
   };
 
   return (
     <View style={styles.container}>
       <View style={styles.form}>
-        <TextInput
-          style={styles.input}
-          placeholder={'Add new todo'}
-          onChangeText={(text: string) => setNewTodo(text)}
-          value={newTodo}
-          maxLength={200}
-          multiline={true}
-        />
+        <View style={styles.pickerContainer}>
+          <Picker
+            selectedValue={category}
+            onValueChange={(value) => setCategory(value)}
+          >
+            {categories.map((item) => (
+              <Picker.Item key={item} label={item} value={item} />
+            ))}
+          </Picker>
+        </View>
+        <View>
+          <TextInput
+            style={
+              category !== 'Select an option'
+                ? styles.activeInput
+                : styles.inActiveInput
+            }
+            placeholder={'Add new todo'}
+            onChangeText={(text: string) => setTitle(text)}
+            value={title}
+            maxLength={200}
+            multiline={true}
+            editable={category !== 'Select an option'}
+          />
+        </View>
         <View style={styles.buttonContainer}>
-          {newTodo === '' ? (
+          {title === '' ? (
             <TouchableOpacity
               style={[styles.button, styles.disabledButton]}
               disabled={true}
@@ -79,7 +107,7 @@ const TodoList = ({ navigation }: TodoListProps) => {
                     item.completed ? styles.completed : styles.notCompleted
                   }
                 >
-                  {item.title}
+                  [{item.category}] {item.title}
                 </Text>
                 <TouchableOpacity
                   style={styles.detailButton}
@@ -109,11 +137,21 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 20,
   },
-  input: {
+  activeInput: {
     fontSize: 16,
     padding: 10,
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: '#2196f3',
+    backgroundColor: '#ffffff',
+    borderRadius: 5,
+    width: '100%',
+    marginBottom: 10,
+  },
+  inActiveInput: {
+    fontSize: 16,
+    padding: 10,
+    borderWidth: 1,
+    borderColor: '#cccccc',
     borderRadius: 5,
     width: '100%',
     marginBottom: 10,
@@ -157,7 +195,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   } as TextStyle,
   disabledButton: {
-    backgroundColor: '#D8D8D8',
+    backgroundColor: '#d8d8d8',
   },
   addButton: {
     backgroundColor: '#2196f3',
@@ -168,6 +206,18 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     paddingVertical: 8,
     paddingHorizontal: 10,
+  },
+  pickerContainer: {
+    marginBottom: 10,
+    borderColor: '#cccccc',
+    borderWidth: 1,
+    borderRadius: 5,
+  },
+  inputActiveWrapper: {
+    borderColor: '#2196f3',
+  },
+  inputInActiveWrapper: {
+    borderColor: '#cccccc',
   },
 });
 

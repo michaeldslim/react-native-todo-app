@@ -19,12 +19,8 @@ export const fetchTodos = async () => {
   })) as Todo[];
 };
 
-export const addTodo = async (title: string) => {
-  await addDoc(todosCollection, {
-    title,
-    completed: false,
-    createdAt: new Date(),
-  });
+export const addTodo = async (todo: Omit<Todo, 'id'>) => {
+  await addDoc(todosCollection, todo);
 };
 
 export const updateTodo = async (id: string, title: string) => {
