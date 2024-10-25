@@ -23,9 +23,9 @@ export const addTodo = async (todo: Omit<Todo, 'id'>) => {
   await addDoc(todosCollection, todo);
 };
 
-export const updateTodo = async (id: string, title: string) => {
+export const updateTodo = async (id: string, todo: string) => {
   const editDoc = doc(FIRESTORE_DB, 'todos', id);
-  await updateDoc(editDoc, { title });
+  await updateDoc(editDoc, { todo });
 };
 
 export const toggleStatus = async (id: string, completed: boolean) => {

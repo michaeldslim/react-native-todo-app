@@ -21,7 +21,7 @@ const categories = ['Select an option', 'Work', 'Home', 'Shopping', 'Others'];
 
 const TodoList = ({ navigation }: TodoListProps) => {
   const isFocused = useIsFocused();
-  const [title, setTitle] = useState<string>('');
+  const [todo, setTodo] = useState<string>('');
   const [todos, setTodos] = useState<Todo[]>([]);
   const [category, setCategory] = useState<string>('Select an option');
 
@@ -34,17 +34,17 @@ const TodoList = ({ navigation }: TodoListProps) => {
   }, [isFocused]);
 
   const handleAddTodo = async () => {
-    if (title.trim() && category) {
-      const todo: Omit<Todo, 'id'> = {
-        title,
+    if (todo.trim() && category) {
+      const todoItem: Omit<Todo, 'id'> = {
+        todo,
         completed: false,
         createdAt: new Date(),
         category,
       };
-      await addTodo(todo);
+      await addTodo(todoItem);
       const todos = await fetchTodos();
       setTodos(todos);
-      setTitle('');
+      setTodo('');
       setCategory('Select an option');
     }
   };
@@ -70,15 +70,15 @@ const TodoList = ({ navigation }: TodoListProps) => {
                 : styles.inActiveInput
             }
             placeholder={'Add new todo'}
-            onChangeText={(text: string) => setTitle(text)}
-            value={title}
+            onChangeText={(text: string) => setTodo(text)}
+            value={todo}
             maxLength={200}
             multiline={true}
             editable={category !== 'Select an option'}
           />
         </View>
         <View style={styles.buttonContainer}>
-          {title === '' ? (
+          {todo === '' ? (
             <TouchableOpacity
               style={[styles.button, styles.disabledButton]}
               disabled={true}
@@ -99,7 +99,7 @@ const TodoList = ({ navigation }: TodoListProps) => {
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => (
             <TouchableOpacity
-              onPress={() => navigation.navigate('Detail', { todo: item })}
+              onPress={() => navigation.navigate('Detail', { todoItem: item })}
             >
               <View style={styles.item}>
                 <Text
@@ -107,11 +107,13 @@ const TodoList = ({ navigation }: TodoListProps) => {
                     item.completed ? styles.completed : styles.notCompleted
                   }
                 >
-                  [{item.category}] {item.title}
+                  [{item.category}] {item.todo}
                 </Text>
                 <TouchableOpacity
                   style={styles.detailButton}
-                  onPress={() => navigation.navigate('Detail', { todo: item })}
+                  onPress={() =>
+                    navigation.navigate('Detail', { todoItem: item })
+                  }
                 >
                   <Text style={styles.buttonText}>Details</Text>
                 </TouchableOpacity>

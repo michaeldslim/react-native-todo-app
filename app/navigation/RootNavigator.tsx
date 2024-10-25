@@ -6,7 +6,7 @@ import { Todo } from '../screens/types';
 
 export type RootStackList = {
   List: undefined;
-  Detail: { todo: Todo };
+  Detail: { todoItem: Todo };
 };
 
 const Stack = createNativeStackNavigator<RootStackList>();
