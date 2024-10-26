@@ -102,7 +102,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     padding: 10,
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: '#cccccc',
     borderRadius: 5,
     width: '100%',
     marginBottom: 10,
@@ -137,13 +137,13 @@ const styles = StyleSheet.create({
     backgroundColor: '#2196f3',
   },
   disabledButton: {
-    backgroundColor: '#D8D8D8',
+    backgroundColor: '#d8d8d8',
   },
   deleteButton: {
-    backgroundColor: '#F44336',
+    backgroundColor: '#f44336',
   },
   toggleButton: {
-    backgroundColor: '#4CAF50',
+    backgroundColor: '#4caf50',
   },
 });
 
