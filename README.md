@@ -52,6 +52,21 @@ initializeApp(firebaseConfig);
 
 export const db = firestore();
 ```
+### Configure Metro
+- Expo CLI uses Metro (The JavaScript bundler for React Native) to bundle your JavaScript code and assets, and add support for more file extensions.
+
+```
+npx expo customize metro.config.js
+```
+Then, update the file with the following configuration:
+```
+const { getDefaultConfig } = require('@expo/metro-config');
+
+const defaultConfig = getDefaultConfig(__dirname);
+defaultConfig.resolver.sourceExts.push('cjs');
+
+module.exports = defaultConfig;
+```
 
 ### To-Do List Component
 - Define a component (TodoList.tsx) that will handle displaying the list of to-dos.
