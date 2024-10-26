@@ -1,4 +1,11 @@
-import { View, StyleSheet, TextInput, TextStyle } from 'react-native';
+import {
+  View,
+  StyleSheet,
+  TextInput,
+  TextStyle,
+  Platform,
+  KeyboardAvoidingView,
+} from 'react-native';
 import React, { useState } from 'react';
 import {
   deleteTodo,
@@ -13,22 +20,22 @@ import { TodoActionButton } from '../components/todoActionButton';
 type TodoDetailProps = NativeStackScreenProps<RootStackList, 'Detail'>;
 
 const TodoDetail = ({ route, navigation }: TodoDetailProps) => {
-  const { todo } = route.params;
+  const { todoItem } = route.params;
 
-  const [editTitle, setEditTitle] = useState<string>(todo.title);
+  const [editTodo, setEditTodo] = useState<string>(todoItem.todo);
 
   const handleUpdateTodo = async () => {
-    await updateTodo(todo.id, editTitle);
+    await updateTodo(todoItem.id, editTodo);
     navigation.goBack();
   };
 
   const handleDeleteTodo = async () => {
-    await deleteTodo(todo.id);
+    await deleteTodo(todoItem.id);
     navigation.goBack();
   };
 
   const handleToggleStatus = async () => {
-    await toggleStatus(todo.id, !todo.completed);
+    await toggleStatus(todoItem.id, !todoItem.completed);
     navigation.goBack();
   };
 
@@ -37,14 +44,14 @@ const TodoDetail = ({ route, navigation }: TodoDetailProps) => {
       <View style={styles.form}>
         <TextInput
           style={styles.input}
-          value={editTitle}
-          onChangeText={setEditTitle}
+          value={editTodo}
+          onChangeText={setEditTodo}
           placeholder="Edit Todo Title"
           maxLength={200}
           multiline={true}
         />
         <View style={styles.buttonContainer}>
-          {editTitle === todo.title ? (
+          {editTodo === todoItem.todo ? (
             <TodoUpdateButton
               disabled={true}
               styles={styles}
@@ -67,7 +74,9 @@ const TodoDetail = ({ route, navigation }: TodoDetailProps) => {
           <TodoActionButton
             styles={[styles.button, styles.toggleButton]}
             onPress={handleToggleStatus}
-            text={todo.completed ? 'Mark as Incomplete' : 'Mark as Complete'}
+            text={
+              todoItem.completed ? 'Mark as Incomplete' : 'Mark as Complete'
+            }
             textStyles={[styles.buttonText]}
           />
         </View>

@@ -6,7 +6,10 @@ import {
   TouchableOpacity,
   Text,
   TextStyle,
+  KeyboardAvoidingView,
+  Platform,
 } from 'react-native';
+import { Picker } from '@react-native-picker/picker';
 import React, { useEffect, useState } from 'react';
 import { fetchTodos, addTodo } from '../service/firebaseService';
 import { Todo } from './types';
@@ -16,10 +19,17 @@ import { useIsFocused } from '@react-navigation/native';
 
 type TodoListProps = NativeStackScreenProps<RootStackList, 'List'>;
 
+const categories = ['Select an option', 'Home', 'Work', 'Shopping', 'Others'];
+
+const allCategories = ['All', ...categories.slice(1)];
+
 const TodoList = ({ navigation }: TodoListProps) => {
   const isFocused = useIsFocused();
-  const [newTodo, setNewTodo] = useState<string>('');
+  const [todo, setTodo] = useState<string>('');
   const [todos, setTodos] = useState<Todo[]>([]);
+  const [filteredTodos, setFilteredTodos] = useState<Todo[]>([]);
+  const [category, setCategory] = useState<string>('Select an option');
+  const [selectedCategory, setSelectedCategory] = useState<string>('All');
 
   useEffect(() => {
     const loadTodos = async () => {
@@ -29,91 +39,177 @@ const TodoList = ({ navigation }: TodoListProps) => {
     loadTodos().then();
   }, [isFocused]);
 
+  useEffect(() => {
+    filterTodos();
+  }, [todos, selectedCategory]);
+
+  const filterTodos = () => {
+    if (selectedCategory === 'All') {
+      setFilteredTodos(todos);
+    } else {
+      setFilteredTodos(
+        todos.filter((todo) => todo.category === selectedCategory),
+      );
+    }
+  };
+
+  const getTotalTodosByCategory = (category: string) => {
+    if (category === 'All') {
+      return todos.length;
+    }
+    return todos.filter((todo) => todo.category === category).length;
+  };
+
   const handleAddTodo = async () => {
-    if (newTodo.trim()) {
-      await addTodo(newTodo);
+    if (todo.trim() && category) {
+      const todoItem: Omit<Todo, 'id'> = {
+        todo,
+        completed: false,
+        createdAt: new Date(),
+        category,
+      };
+      await addTodo(todoItem);
       const todos = await fetchTodos();
       setTodos(todos);
-      setNewTodo('');
+      setTodo('');
+      setCategory('Select an option');
     }
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.form}>
-        <TextInput
-          style={styles.input}
-          placeholder={'Add new todo'}
-          onChangeText={(text: string) => setNewTodo(text)}
-          value={newTodo}
-          maxLength={200}
-          multiline={true}
-        />
-        <View style={styles.buttonContainer}>
-          {newTodo === '' ? (
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      style={styles.keyboardAvoidingView}
+    >
+      <View style={styles.container}>
+        <View style={styles.form}>
+          <View style={styles.pickerContainer}>
+            <Picker
+              selectedValue={category}
+              onValueChange={(value) => setCategory(value)}
+            >
+              {categories.map((item) => (
+                <Picker.Item key={item} label={item} value={item} />
+              ))}
+            </Picker>
+          </View>
+          <TextInput
+            style={
+              category !== 'Select an option'
+                ? styles.activeInput
+                : styles.inActiveInput
+            }
+            placeholder={'Add new todo'}
+            onChangeText={(text: string) => setTodo(text)}
+            value={todo}
+            maxLength={200}
+            multiline={true}
+            editable={category !== 'Select an option'}
+          />
+          <View style={styles.buttonContainer}>
             <TouchableOpacity
-              style={[styles.button, styles.disabledButton]}
-              disabled={true}
+              style={[
+                styles.button,
+                todo === '' ? styles.disabledButton : styles.addButton,
+              ]}
+              disabled={todo === ''}
+              onPress={todo !== '' ? handleAddTodo : () => {}}
             >
               <Text style={styles.buttonText}>Add Todo</Text>
             </TouchableOpacity>
-          ) : (
-            <TouchableOpacity
-              style={[styles.button, styles.addButton]}
-              onPress={handleAddTodo}
-            >
-              <Text style={styles.buttonText}>Add Todo</Text>
-            </TouchableOpacity>
-          )}
-        </View>
-        <FlatList
-          data={todos}
-          keyExtractor={(item) => item.id}
-          renderItem={({ item }) => (
-            <TouchableOpacity
-              onPress={() => navigation.navigate('Detail', { todo: item })}
-            >
-              <View style={styles.item}>
+          </View>
+          <View style={styles.filterContainer}>
+            {allCategories.map((category, idx) => (
+              <TouchableOpacity
+                key={idx}
+                style={[
+                  styles.filterButton,
+                  selectedCategory === category && styles.filterButtonSelected,
+                ]}
+                onPress={() => setSelectedCategory(category)}
+              >
                 <Text
-                  style={
-                    item.completed ? styles.completed : styles.notCompleted
-                  }
+                  style={[
+                    styles.buttonText,
+                    selectedCategory === category &&
+                      styles.filterButtonTextSelected,
+                  ]}
                 >
-                  {item.title}
+                  {category} ({getTotalTodosByCategory(category)})
                 </Text>
-                <TouchableOpacity
-                  style={styles.detailButton}
-                  onPress={() => navigation.navigate('Detail', { todo: item })}
-                >
-                  <Text style={styles.buttonText}>Details</Text>
-                </TouchableOpacity>
-              </View>
-            </TouchableOpacity>
-          )}
-        />
+              </TouchableOpacity>
+            ))}
+          </View>
+          <FlatList
+            data={filteredTodos}
+            keyExtractor={(item) => item.id}
+            style={{ padding: 5 }}
+            renderItem={({ item }) => (
+              <TouchableOpacity
+                onPress={() =>
+                  navigation.navigate('Detail', { todoItem: item })
+                }
+              >
+                <View style={styles.item}>
+                  <Text
+                    style={
+                      item.completed ? styles.completed : styles.notCompleted
+                    }
+                  >
+                    {item.todo}
+                  </Text>
+                  <View style={styles.detailButtonWrapper}>
+                    <TouchableOpacity
+                      style={styles.detailButton}
+                      onPress={() =>
+                        navigation.navigate('Detail', { todoItem: item })
+                      }
+                    >
+                      <Text style={styles.buttonText}>Details</Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              </TouchableOpacity>
+            )}
+            contentContainerStyle={styles.listContent}
+          />
+        </View>
       </View>
-    </View>
+    </KeyboardAvoidingView>
   );
 };
 
 const styles = StyleSheet.create({
+  keyboardAvoidingView: {
+    flex: 1,
+  },
   container: {
+    flex: 1,
     marginHorizontal: 10,
   },
+  listContent: {
+    paddingBottom: 16,
+  },
   form: {
+    flex: 1,
     marginVertical: 10,
     flexDirection: 'column',
   },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 20,
-  },
-  input: {
+  activeInput: {
     fontSize: 16,
     padding: 10,
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: '#2196f3',
+    backgroundColor: '#ffffff',
+    borderRadius: 5,
+    width: '100%',
+    marginBottom: 10,
+  },
+  inActiveInput: {
+    fontSize: 16,
+    padding: 10,
+    borderWidth: 1,
+    borderColor: '#cccccc',
     borderRadius: 5,
     width: '100%',
     marginBottom: 10,
@@ -124,8 +220,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#f9f9f9',
     padding: 5,
     borderRadius: 5,
-    marginTop: 5,
-    marginBottom: 5,
+    marginTop: 2,
+    marginBottom: 2,
     width: '100%',
   },
   completed: {
@@ -135,39 +231,72 @@ const styles = StyleSheet.create({
     width: '80%',
   },
   notCompleted: {
+    alignSelf: 'center',
     color: 'black',
     fontSize: 16,
     width: '80%',
   },
   buttonContainer: {
-    marginTop: 10,
     width: '100%',
   },
   button: {
     alignItems: 'center',
     justifyContent: 'center',
-    padding: 15,
+    padding: 10,
     marginBottom: 10,
-    borderRadius: 10,
+    borderRadius: 5,
     width: '100%',
   },
   buttonText: {
     color: 'white',
-    fontSize: 16,
+    fontSize: 13,
     fontWeight: 'bold',
   } as TextStyle,
   disabledButton: {
-    backgroundColor: '#D8D8D8',
+    backgroundColor: '#d8d8d8',
   },
   addButton: {
     backgroundColor: '#2196f3',
   },
+  detailButtonWrapper: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   detailButton: {
     backgroundColor: '#2196f3',
-    height: 40,
-    borderRadius: 10,
-    paddingVertical: 8,
-    paddingHorizontal: 10,
+    height: 30,
+    borderRadius: 5,
+    paddingVertical: 6,
+    paddingHorizontal: 6,
+  },
+  pickerContainer: {
+    marginBottom: 10,
+    borderColor: '#cccccc',
+    borderWidth: 1,
+    borderRadius: 5,
+  },
+  inputActiveWrapper: {
+    borderColor: '#2196f3',
+  },
+  inputInActiveWrapper: {
+    borderColor: '#cccccc',
+  },
+  filterContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    marginVertical: 6,
+  },
+  filterButton: {
+    borderRadius: 5,
+    backgroundColor: '#007bff',
+    paddingVertical: 6,
+    paddingHorizontal: 5,
+  },
+  filterButtonSelected: {
+    backgroundColor: '#0056b3',
+  },
+  filterButtonTextSelected: {
+    color: '#ffd700',
   },
 });
 
