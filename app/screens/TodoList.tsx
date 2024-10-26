@@ -143,7 +143,7 @@ const TodoList = ({ navigation }: TodoListProps) => {
                     item.completed ? styles.completed : styles.notCompleted
                   }
                 >
-                  [{item.category}] {item.todo}
+                  {item.todo}
                 </Text>
                 <View style={styles.detailButtonWrapper}>
                   <TouchableOpacity
@@ -211,13 +211,13 @@ const styles = StyleSheet.create({
     textDecorationLine: 'line-through',
     color: 'gray',
     fontSize: 16,
-    width: '85%',
+    width: '80%',
   },
   notCompleted: {
     alignSelf: 'center',
     color: 'black',
     fontSize: 16,
-    width: '85%',
+    width: '80%',
   },
   buttonContainer: {
     marginTop: 10,
