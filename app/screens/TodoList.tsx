@@ -19,11 +19,15 @@ type TodoListProps = NativeStackScreenProps<RootStackList, 'List'>;
 
 const categories = ['Select an option', 'Work', 'Home', 'Shopping', 'Others'];
 
+const allCategories = ['All', ...categories.slice(1)];
+
 const TodoList = ({ navigation }: TodoListProps) => {
   const isFocused = useIsFocused();
   const [todo, setTodo] = useState<string>('');
   const [todos, setTodos] = useState<Todo[]>([]);
+  const [filteredTodos, setFilteredTodos] = useState<Todo[]>([]);
   const [category, setCategory] = useState<string>('Select an option');
+  const [selectedCategory, setSelectedCategory] = useState<string>('All');
 
   useEffect(() => {
     const loadTodos = async () => {
@@ -32,6 +36,20 @@ const TodoList = ({ navigation }: TodoListProps) => {
     };
     loadTodos().then();
   }, [isFocused]);
+
+  useEffect(() => {
+    filterTodos();
+  }, [todos, selectedCategory]);
+
+  const filterTodos = () => {
+    if (selectedCategory === 'All') {
+      setFilteredTodos(todos);
+    } else {
+      setFilteredTodos(
+        todos.filter((todo) => todo.category === selectedCategory),
+      );
+    }
+  };
 
   const handleAddTodo = async () => {
     if (todo.trim() && category) {
@@ -89,9 +107,32 @@ const TodoList = ({ navigation }: TodoListProps) => {
             <Text style={styles.buttonText}>Add Todo</Text>
           </TouchableOpacity>
         </View>
+        <View style={styles.filterContainer}>
+          {allCategories.map((category, idx) => (
+            <TouchableOpacity
+              key={idx}
+              style={[
+                styles.filterButton,
+                selectedCategory === category && styles.filterButtonSelected,
+              ]}
+              onPress={() => setSelectedCategory(category)}
+            >
+              <Text
+                style={[
+                  styles.buttonText,
+                  selectedCategory === category &&
+                    styles.filterButtonTextSelected,
+                ]}
+              >
+                {category}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </View>
         <FlatList
-          data={todos}
+          data={filteredTodos}
           keyExtractor={(item) => item.id}
+          style={{ padding: 5 }}
           renderItem={({ item }) => (
             <TouchableOpacity
               onPress={() => navigation.navigate('Detail', { todoItem: item })}
@@ -104,14 +145,16 @@ const TodoList = ({ navigation }: TodoListProps) => {
                 >
                   [{item.category}] {item.todo}
                 </Text>
-                <TouchableOpacity
-                  style={styles.detailButton}
-                  onPress={() =>
-                    navigation.navigate('Detail', { todoItem: item })
-                  }
-                >
-                  <Text style={styles.buttonText}>Details</Text>
-                </TouchableOpacity>
+                <View style={styles.detailButtonWrapper}>
+                  <TouchableOpacity
+                    style={styles.detailButton}
+                    onPress={() =>
+                      navigation.navigate('Detail', { todoItem: item })
+                    }
+                  >
+                    <Text style={styles.buttonText}>Details</Text>
+                  </TouchableOpacity>
+                </View>
               </View>
             </TouchableOpacity>
           )}
@@ -168,7 +211,7 @@ const styles = StyleSheet.create({
     textDecorationLine: 'line-through',
     color: 'gray',
     fontSize: 16,
-    width: '80%',
+    width: '85%',
   },
   notCompleted: {
     alignSelf: 'center',
@@ -185,7 +228,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     padding: 10,
     marginBottom: 10,
-    borderRadius: 10,
+    borderRadius: 5,
     width: '100%',
   },
   buttonText: {
@@ -199,10 +242,14 @@ const styles = StyleSheet.create({
   addButton: {
     backgroundColor: '#2196f3',
   },
+  detailButtonWrapper: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   detailButton: {
     backgroundColor: '#2196f3',
     height: 30,
-    borderRadius: 10,
+    borderRadius: 5,
     paddingVertical: 6,
     paddingHorizontal: 6,
   },
@@ -217,6 +264,23 @@ const styles = StyleSheet.create({
   },
   inputInActiveWrapper: {
     borderColor: '#cccccc',
+  },
+  filterContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    marginVertical: 6,
+  },
+  filterButton: {
+    borderRadius: 5,
+    backgroundColor: '#007bff',
+    paddingVertical: 6,
+    paddingHorizontal: 10,
+  },
+  filterButtonSelected: {
+    backgroundColor: '#0056b3',
+  },
+  filterButtonTextSelected: {
+    color: '#ffd700',
   },
 });
 
