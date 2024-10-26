@@ -6,6 +6,8 @@ import {
   TouchableOpacity,
   Text,
   TextStyle,
+  KeyboardAvoidingView,
+  Platform,
 } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import React, { useEffect, useState } from 'react';
@@ -17,7 +19,7 @@ import { useIsFocused } from '@react-navigation/native';
 
 type TodoListProps = NativeStackScreenProps<RootStackList, 'List'>;
 
-const categories = ['Select an option', 'Work', 'Home', 'Shopping', 'Others'];
+const categories = ['Select an option', 'Home', 'Work', 'Shopping', 'Others'];
 
 const allCategories = ['All', ...categories.slice(1)];
 
@@ -51,6 +53,13 @@ const TodoList = ({ navigation }: TodoListProps) => {
     }
   };
 
+  const getTotalTodosByCategory = (category: string) => {
+    if (category === 'All') {
+      return todos.length;
+    }
+    return todos.filter((todo) => todo.category === category).length;
+  };
+
   const handleAddTodo = async () => {
     if (todo.trim() && category) {
       const todoItem: Omit<Todo, 'id'> = {
@@ -68,19 +77,22 @@ const TodoList = ({ navigation }: TodoListProps) => {
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.form}>
-        <View style={styles.pickerContainer}>
-          <Picker
-            selectedValue={category}
-            onValueChange={(value) => setCategory(value)}
-          >
-            {categories.map((item) => (
-              <Picker.Item key={item} label={item} value={item} />
-            ))}
-          </Picker>
-        </View>
-        <View>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      style={styles.keyboardAvoidingView}
+    >
+      <View style={styles.container}>
+        <View style={styles.form}>
+          <View style={styles.pickerContainer}>
+            <Picker
+              selectedValue={category}
+              onValueChange={(value) => setCategory(value)}
+            >
+              {categories.map((item) => (
+                <Picker.Item key={item} label={item} value={item} />
+              ))}
+            </Picker>
+          </View>
           <TextInput
             style={
               category !== 'Select an option'
@@ -94,78 +106,83 @@ const TodoList = ({ navigation }: TodoListProps) => {
             multiline={true}
             editable={category !== 'Select an option'}
           />
-        </View>
-        <View style={styles.buttonContainer}>
-          <TouchableOpacity
-            style={[
-              styles.button,
-              todo === '' ? styles.disabledButton : styles.addButton,
-            ]}
-            disabled={todo === ''}
-            onPress={todo !== '' ? handleAddTodo : () => {}}
-          >
-            <Text style={styles.buttonText}>Add Todo</Text>
-          </TouchableOpacity>
-        </View>
-        <View style={styles.filterContainer}>
-          {allCategories.map((category, idx) => (
+          <View style={styles.buttonContainer}>
             <TouchableOpacity
-              key={idx}
               style={[
-                styles.filterButton,
-                selectedCategory === category && styles.filterButtonSelected,
+                styles.button,
+                todo === '' ? styles.disabledButton : styles.addButton,
               ]}
-              onPress={() => setSelectedCategory(category)}
+              disabled={todo === ''}
+              onPress={todo !== '' ? handleAddTodo : () => {}}
             >
-              <Text
-                style={[
-                  styles.buttonText,
-                  selectedCategory === category &&
-                    styles.filterButtonTextSelected,
-                ]}
-              >
-                {category}
-              </Text>
+              <Text style={styles.buttonText}>Add Todo</Text>
             </TouchableOpacity>
-          ))}
-        </View>
-        <FlatList
-          data={filteredTodos}
-          keyExtractor={(item) => item.id}
-          style={{ padding: 5 }}
-          renderItem={({ item }) => (
-            <TouchableOpacity
-              onPress={() => navigation.navigate('Detail', { todoItem: item })}
-            >
-              <View style={styles.item}>
+          </View>
+          <View style={styles.filterContainer}>
+            {allCategories.map((category, idx) => (
+              <TouchableOpacity
+                key={idx}
+                style={[
+                  styles.filterButton,
+                  selectedCategory === category && styles.filterButtonSelected,
+                ]}
+                onPress={() => setSelectedCategory(category)}
+              >
                 <Text
-                  style={
-                    item.completed ? styles.completed : styles.notCompleted
-                  }
+                  style={[
+                    styles.buttonText,
+                    selectedCategory === category &&
+                      styles.filterButtonTextSelected,
+                  ]}
                 >
-                  {item.todo}
+                  {category} ({getTotalTodosByCategory(category)})
                 </Text>
-                <View style={styles.detailButtonWrapper}>
-                  <TouchableOpacity
-                    style={styles.detailButton}
-                    onPress={() =>
-                      navigation.navigate('Detail', { todoItem: item })
+              </TouchableOpacity>
+            ))}
+          </View>
+          <FlatList
+            data={filteredTodos}
+            keyExtractor={(item) => item.id}
+            style={{ padding: 5 }}
+            renderItem={({ item }) => (
+              <TouchableOpacity
+                onPress={() =>
+                  navigation.navigate('Detail', { todoItem: item })
+                }
+              >
+                <View style={styles.item}>
+                  <Text
+                    style={
+                      item.completed ? styles.completed : styles.notCompleted
                     }
                   >
-                    <Text style={styles.buttonText}>Details</Text>
-                  </TouchableOpacity>
+                    {item.todo}
+                  </Text>
+                  <View style={styles.detailButtonWrapper}>
+                    <TouchableOpacity
+                      style={styles.detailButton}
+                      onPress={() =>
+                        navigation.navigate('Detail', { todoItem: item })
+                      }
+                    >
+                      <Text style={styles.buttonText}>Details</Text>
+                    </TouchableOpacity>
+                  </View>
                 </View>
-              </View>
-            </TouchableOpacity>
-          )}
-          contentContainerStyle={styles.listContent}
-        />
+              </TouchableOpacity>
+            )}
+            contentContainerStyle={styles.listContent}
+          />
+        </View>
       </View>
-    </View>
+    </KeyboardAvoidingView>
   );
 };
 
 const styles = StyleSheet.create({
+  keyboardAvoidingView: {
+    flex: 1,
+  },
   container: {
     flex: 1,
     marginHorizontal: 10,
@@ -220,7 +237,6 @@ const styles = StyleSheet.create({
     width: '80%',
   },
   buttonContainer: {
-    marginTop: 10,
     width: '100%',
   },
   button: {
@@ -274,7 +290,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     backgroundColor: '#007bff',
     paddingVertical: 6,
-    paddingHorizontal: 10,
+    paddingHorizontal: 5,
   },
   filterButtonSelected: {
     backgroundColor: '#0056b3',

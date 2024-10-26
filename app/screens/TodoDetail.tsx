@@ -1,4 +1,11 @@
-import { View, StyleSheet, TextInput, TextStyle } from 'react-native';
+import {
+  View,
+  StyleSheet,
+  TextInput,
+  TextStyle,
+  Platform,
+  KeyboardAvoidingView,
+} from 'react-native';
 import React, { useState } from 'react';
 import {
   deleteTodo,
@@ -33,52 +40,60 @@ const TodoDetail = ({ route, navigation }: TodoDetailProps) => {
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.form}>
-        <TextInput
-          style={styles.input}
-          value={editTodo}
-          onChangeText={setEditTodo}
-          placeholder="Edit Todo Title"
-          maxLength={200}
-          multiline={true}
-        />
-        <View style={styles.buttonContainer}>
-          {editTodo === todoItem.todo ? (
-            <TodoUpdateButton
-              disabled={true}
-              styles={styles}
-              text="Update Todo"
-            />
-          ) : (
-            <TodoUpdateButton
-              disabled={false}
-              styles={styles}
-              onPress={handleUpdateTodo}
-              text="Update Todo"
-            />
-          )}
-          <TodoActionButton
-            styles={[styles.button, styles.deleteButton]}
-            onPress={handleDeleteTodo}
-            text="Delete Todo"
-            textStyles={[styles.buttonText]}
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      style={styles.keyboardAvoidingView}
+    >
+      <View style={styles.container}>
+        <View style={styles.form}>
+          <TextInput
+            style={styles.input}
+            value={editTodo}
+            onChangeText={setEditTodo}
+            placeholder="Edit Todo Title"
+            maxLength={200}
+            multiline={true}
           />
-          <TodoActionButton
-            styles={[styles.button, styles.toggleButton]}
-            onPress={handleToggleStatus}
-            text={
-              todoItem.completed ? 'Mark as Incomplete' : 'Mark as Complete'
-            }
-            textStyles={[styles.buttonText]}
-          />
+          <View style={styles.buttonContainer}>
+            {editTodo === todoItem.todo ? (
+              <TodoUpdateButton
+                disabled={true}
+                styles={styles}
+                text="Update Todo"
+              />
+            ) : (
+              <TodoUpdateButton
+                disabled={false}
+                styles={styles}
+                onPress={handleUpdateTodo}
+                text="Update Todo"
+              />
+            )}
+            <TodoActionButton
+              styles={[styles.button, styles.deleteButton]}
+              onPress={handleDeleteTodo}
+              text="Delete Todo"
+              textStyles={[styles.buttonText]}
+            />
+            <TodoActionButton
+              styles={[styles.button, styles.toggleButton]}
+              onPress={handleToggleStatus}
+              text={
+                todoItem.completed ? 'Mark as Incomplete' : 'Mark as Complete'
+              }
+              textStyles={[styles.buttonText]}
+            />
+          </View>
         </View>
       </View>
-    </View>
+    </KeyboardAvoidingView>
   );
 };
 
 const styles = StyleSheet.create({
+  keyboardAvoidingView: {
+    flex: 1,
+  },
   container: {
     marginHorizontal: 10,
   },
