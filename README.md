@@ -60,7 +60,7 @@ export const db = firestore();
 - Render the list of items with options to toggle their completion status and delete them.
 
 ### Run the Application
-- This project is developed using Android Studio.
+- This project is developed using Android Studio and iOS.
 
 ```yarn start```
 
