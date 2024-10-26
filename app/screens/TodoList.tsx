@@ -78,7 +78,7 @@ const TodoList = ({ navigation }: TodoListProps) => {
 
   return (
     <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'position'}
       style={styles.keyboardAvoidingView}
     >
       <View style={styles.container}>
