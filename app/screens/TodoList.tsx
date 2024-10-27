@@ -16,11 +16,11 @@ import { Todo } from './types';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackList } from '../navigation/RootNavigator';
 import { useIsFocused } from '@react-navigation/native';
+import { IconButton } from 'react-native-paper';
 
 type TodoListProps = NativeStackScreenProps<RootStackList, 'List'>;
 
-const categories = ['Select an option', 'Home', 'Work', 'Shopping', 'Others'];
-
+const categories = ['Select an option', 'Home', 'Work', 'Wishlist', 'Others'];
 const allCategories = ['All', ...categories.slice(1)];
 
 const TodoList = ({ navigation }: TodoListProps) => {
@@ -145,31 +145,26 @@ const TodoList = ({ navigation }: TodoListProps) => {
             keyExtractor={(item) => item.id}
             style={{ padding: 5 }}
             renderItem={({ item }) => (
-              <TouchableOpacity
-                onPress={() =>
-                  navigation.navigate('Detail', { todoItem: item })
-                }
-              >
-                <View style={styles.item}>
-                  <Text
-                    style={
-                      item.completed ? styles.completed : styles.notCompleted
+              <View style={styles.item}>
+                <Text
+                  style={
+                    item.completed ? styles.completed : styles.notCompleted
+                  }
+                >
+                  {item.todo}
+                </Text>
+                <View style={styles.detailButtonWrapper}>
+                  <IconButton
+                    icon={'pencil'}
+                    size={25}
+                    iconColor={'#ffffff'}
+                    onPress={() =>
+                      navigation.navigate('Detail', { todoItem: item })
                     }
-                  >
-                    {item.todo}
-                  </Text>
-                  <View style={styles.detailButtonWrapper}>
-                    <TouchableOpacity
-                      style={styles.detailButton}
-                      onPress={() =>
-                        navigation.navigate('Detail', { todoItem: item })
-                      }
-                    >
-                      <Text style={styles.buttonText}>Details</Text>
-                    </TouchableOpacity>
-                  </View>
+                  />
                 </View>
-              </TouchableOpacity>
+              </View>
+              // </TouchableOpacity>
             )}
             contentContainerStyle={styles.listContent}
           />
@@ -217,24 +212,27 @@ const styles = StyleSheet.create({
   item: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    backgroundColor: '#f9f9f9',
+    backgroundColor: '#1e90ff',
     padding: 5,
     borderRadius: 5,
-    marginTop: 2,
-    marginBottom: 2,
+    paddingHorizontal: 16,
+    marginBottom: 6,
     width: '100%',
   },
   completed: {
     textDecorationLine: 'line-through',
-    color: 'gray',
+    alignSelf: 'center',
+    color: '#b5b5b5',
     fontSize: 16,
-    width: '80%',
+    fontWeight: '400',
+    width: '90%',
   },
   notCompleted: {
     alignSelf: 'center',
-    color: 'black',
+    color: '#ffffff',
     fontSize: 16,
-    width: '80%',
+    fontWeight: '600',
+    width: '90%',
   },
   buttonContainer: {
     width: '100%',
@@ -287,7 +285,7 @@ const styles = StyleSheet.create({
     marginVertical: 6,
   },
   filterButton: {
-    borderRadius: 5,
+    borderRadius: 12,
     backgroundColor: '#007bff',
     paddingVertical: 6,
     paddingHorizontal: 5,
