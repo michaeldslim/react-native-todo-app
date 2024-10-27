@@ -146,11 +146,6 @@ const TodoList = ({ navigation }: TodoListProps) => {
             keyExtractor={(item) => item.id}
             style={{ padding: 5 }}
             renderItem={({ item }) => (
-              // <TouchableOpacity
-              //   onPress={() =>
-              //     navigation.navigate('Detail', { todoItem: item })
-              //   }
-              // >
               <View style={styles.item}>
                 <Text
                   style={
@@ -168,14 +163,6 @@ const TodoList = ({ navigation }: TodoListProps) => {
                       navigation.navigate('Detail', { todoItem: item })
                     }
                   />
-                  {/*<TouchableOpacity*/}
-                  {/*  style={styles.detailButton}*/}
-                  {/*  onPress={() =>*/}
-                  {/*    navigation.navigate('Detail', { todoItem: item })*/}
-                  {/*  }*/}
-                  {/*>*/}
-                  {/*  <Text style={styles.buttonText}>Details</Text>*/}
-                  {/*</TouchableOpacity>*/}
                 </View>
               </View>
               // </TouchableOpacity>
