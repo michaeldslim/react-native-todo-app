@@ -39,6 +39,14 @@ const TodoDetail = ({ route, navigation }: TodoDetailProps) => {
     navigation.goBack();
   };
 
+  const getStatusText = (completed: boolean) => {
+    return completed ? 'Mark as Incomplete' : 'Mark as Complete';
+  };
+
+  const isDisabled = editTodo === todoItem.todo;
+
+  const commonButtonStyles = [styles.button, styles.buttonText];
+
   return (
     <View style={styles.container}>
       <View style={styles.form}>
@@ -51,32 +59,22 @@ const TodoDetail = ({ route, navigation }: TodoDetailProps) => {
           multiline={true}
         />
         <View style={styles.buttonContainer}>
-          {editTodo === todoItem.todo ? (
-            <TodoUpdateButton
-              disabled={true}
-              styles={styles}
-              text="Update Todo"
-            />
-          ) : (
-            <TodoUpdateButton
-              disabled={false}
-              styles={styles}
-              onPress={handleUpdateTodo}
-              text="Update Todo"
-            />
-          )}
+          <TodoUpdateButton
+            disabled={isDisabled}
+            styles={styles}
+            onPress={!isDisabled ? handleUpdateTodo : undefined}
+            text="Update Todo"
+          />
           <TodoActionButton
-            styles={[styles.button, styles.deleteButton]}
+            styles={[...commonButtonStyles, styles.deleteButton]}
             onPress={handleDeleteTodo}
             text="Delete Todo"
             textStyles={[styles.buttonText]}
           />
           <TodoActionButton
-            styles={[styles.button, styles.toggleButton]}
+            styles={[...commonButtonStyles, styles.toggleButton]}
             onPress={handleToggleStatus}
-            text={
-              todoItem.completed ? 'Mark as Incomplete' : 'Mark as Complete'
-            }
+            text={getStatusText(todoItem.completed)}
             textStyles={[styles.buttonText]}
           />
         </View>
