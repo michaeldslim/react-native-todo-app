@@ -3,8 +3,9 @@ import {
   StyleSheet,
   TextInput,
   TextStyle,
-  Platform,
-  KeyboardAvoidingView,
+  Modal,
+  Text,
+  TouchableOpacity,
 } from 'react-native';
 import React, { useState } from 'react';
 import {
@@ -23,6 +24,7 @@ const TodoDetail = ({ route, navigation }: TodoDetailProps) => {
   const { todoItem } = route.params;
 
   const [editTodo, setEditTodo] = useState<string>(todoItem.todo);
+  const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
 
   const handleUpdateTodo = async () => {
     await updateTodo(todoItem.id, editTodo);
@@ -30,14 +32,33 @@ const TodoDetail = ({ route, navigation }: TodoDetailProps) => {
   };
 
   const handleDeleteTodo = async () => {
+    if (!todoItem.id) return;
+
     await deleteTodo(todoItem.id);
+    setIsModalVisible(false);
     navigation.goBack();
+  };
+
+  const confirmDelete = () => {
+    setIsModalVisible(true);
+  };
+
+  const cancelDelete = () => {
+    setIsModalVisible(false);
   };
 
   const handleToggleStatus = async () => {
     await toggleStatus(todoItem.id, !todoItem.completed);
     navigation.goBack();
   };
+
+  const getStatusText = (completed: boolean) => {
+    return completed ? 'Mark as Incomplete' : 'Mark as Complete';
+  };
+
+  const isDisabled = editTodo === todoItem.todo;
+
+  const commonButtonStyles = [styles.button, styles.buttonText];
 
   return (
     <View style={styles.container}>
@@ -51,42 +72,61 @@ const TodoDetail = ({ route, navigation }: TodoDetailProps) => {
           multiline={true}
         />
         <View style={styles.buttonContainer}>
-          {editTodo === todoItem.todo ? (
-            <TodoUpdateButton
-              disabled={true}
-              styles={styles}
-              text="Update Todo"
-            />
-          ) : (
-            <TodoUpdateButton
-              disabled={false}
-              styles={styles}
-              onPress={handleUpdateTodo}
-              text="Update Todo"
-            />
-          )}
+          <TodoUpdateButton
+            disabled={isDisabled}
+            styles={styles}
+            onPress={!isDisabled ? handleUpdateTodo : undefined}
+            text="Update Todo"
+          />
           <TodoActionButton
-            styles={[styles.button, styles.deleteButton]}
-            onPress={handleDeleteTodo}
+            styles={[...commonButtonStyles, styles.deleteButton]}
+            onPress={confirmDelete}
             text="Delete Todo"
             textStyles={[styles.buttonText]}
           />
           <TodoActionButton
-            styles={[styles.button, styles.toggleButton]}
+            styles={[...commonButtonStyles, styles.toggleButton]}
             onPress={handleToggleStatus}
-            text={
-              todoItem.completed ? 'Mark as Incomplete' : 'Mark as Complete'
-            }
+            text={getStatusText(todoItem.completed)}
             textStyles={[styles.buttonText]}
           />
         </View>
       </View>
+      <Modal
+        visible={isModalVisible}
+        transparent={true}
+        statusBarTranslucent={true}
+        animationType="fade"
+      >
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalText}>
+              Are you sure you want to delete this item?
+            </Text>
+            <View style={styles.modalButtons}>
+              <TouchableOpacity
+                style={styles.modalButtonCancel}
+                onPress={cancelDelete}
+              >
+                <Text style={styles.modalButtonText}>Cancel</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.modalButtonDelete}
+                onPress={handleDeleteTodo}
+              >
+                <Text style={styles.modalButtonText}>Delete</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
     marginHorizontal: 10,
   },
   form: {
@@ -144,6 +184,49 @@ const styles = StyleSheet.create({
   },
   toggleButton: {
     backgroundColor: '#4caf50',
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0,0,0,0.7)',
+  },
+  modalContent: {
+    width: 300,
+    padding: 20,
+    backgroundColor: 'white',
+    borderRadius: 10,
+    alignItems: 'center',
+  },
+  modalText: {
+    fontSize: 18,
+    marginBottom: 20,
+    textAlign: 'center',
+  },
+  modalButtons: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '100%',
+  },
+  modalButtonCancel: {
+    flex: 1,
+    padding: 10,
+    alignItems: 'center',
+    backgroundColor: '#cccccc',
+    borderRadius: 5,
+    marginRight: 5,
+  },
+  modalButtonDelete: {
+    flex: 1,
+    padding: 10,
+    alignItems: 'center',
+    backgroundColor: '#ff3b30',
+    borderRadius: 5,
+    marginLeft: 5,
+  },
+  modalButtonText: {
+    color: 'white',
+    fontSize: 16,
   },
 });
 
