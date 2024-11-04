@@ -16,7 +16,7 @@ import { Todo } from './types';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackList } from '../navigation/RootNavigator';
 import { useIsFocused } from '@react-navigation/native';
-import { IconButton } from 'react-native-paper';
+import TodoItem from './TodoItem';
 
 type TodoListProps = NativeStackScreenProps<RootStackList, 'List'>;
 
@@ -65,7 +65,7 @@ const TodoList = ({ navigation }: TodoListProps) => {
       const todoItem: Omit<Todo, 'id'> = {
         todo,
         completed: false,
-        createdAt: new Date(),
+        createdAt: new Date().toISOString(),
         category,
       };
       await addTodo(todoItem);
@@ -145,26 +145,12 @@ const TodoList = ({ navigation }: TodoListProps) => {
             keyExtractor={(item) => item.id}
             style={{ padding: 5 }}
             renderItem={({ item }) => (
-              <View style={styles.item}>
-                <Text
-                  style={
-                    item.completed ? styles.completed : styles.notCompleted
-                  }
-                >
-                  {item.todo}
-                </Text>
-                <View style={styles.detailButtonWrapper}>
-                  <IconButton
-                    icon={'pencil'}
-                    size={25}
-                    iconColor={'#ffffff'}
-                    onPress={() =>
-                      navigation.navigate('Detail', { todoItem: item })
-                    }
-                  />
-                </View>
-              </View>
-              // </TouchableOpacity>
+              <TodoItem
+                todo={item}
+                onPress={() =>
+                  navigation.navigate('Detail', { todoItem: item })
+                }
+              />
             )}
             contentContainerStyle={styles.listContent}
           />
@@ -209,31 +195,6 @@ const styles = StyleSheet.create({
     width: '100%',
     marginBottom: 10,
   },
-  item: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    backgroundColor: '#1e90ff',
-    padding: 5,
-    borderRadius: 5,
-    paddingHorizontal: 16,
-    marginBottom: 6,
-    width: '100%',
-  },
-  completed: {
-    textDecorationLine: 'line-through',
-    alignSelf: 'center',
-    color: '#b5b5b5',
-    fontSize: 16,
-    fontWeight: '400',
-    width: '90%',
-  },
-  notCompleted: {
-    alignSelf: 'center',
-    color: '#ffffff',
-    fontSize: 16,
-    fontWeight: '600',
-    width: '90%',
-  },
   buttonContainer: {
     width: '100%',
   },
@@ -255,17 +216,6 @@ const styles = StyleSheet.create({
   },
   addButton: {
     backgroundColor: '#2196f3',
-  },
-  detailButtonWrapper: {
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  detailButton: {
-    backgroundColor: '#2196f3',
-    height: 30,
-    borderRadius: 5,
-    paddingVertical: 6,
-    paddingHorizontal: 6,
   },
   pickerContainer: {
     marginBottom: 10,

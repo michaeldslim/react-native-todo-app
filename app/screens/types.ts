@@ -2,6 +2,6 @@ export interface Todo {
   id: string;
   todo: string;
   completed: boolean;
-  createdAt: Date;
+  createdAt: string;
   category?: string;
 }
