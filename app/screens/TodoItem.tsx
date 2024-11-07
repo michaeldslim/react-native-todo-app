@@ -51,12 +51,12 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   oldTodo: {
-    backgroundColor: '#ff8d9e',
+    backgroundColor: '#dca470',
   },
   completed: {
     textDecorationLine: 'line-through',
     alignSelf: 'center',
-    color: '#b5b5b5',
+    color: '#0f0f0f',
     fontSize: 16,
     fontWeight: '400',
     width: '90%',
