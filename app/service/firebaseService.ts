@@ -8,16 +8,14 @@ import {
   deleteDoc,
   query,
   orderBy,
+  where,
 } from 'firebase/firestore';
 import { Todo } from '../screens/types';
 
 const todosCollection = collection(FIRESTORE_DB, 'todos');
 
-export const fetchTodos = async () => {
-  const q = query(
-    collection(FIRESTORE_DB, 'todos'),
-    orderBy('createdAt', 'desc'),
-  );
+export const fetchTodos = async (userId: string) => {
+  const q = query(todosCollection, where('userId', '==', userId));
   const snapShot = await getDocs(q);
   return snapShot.docs.map((doc) => ({
     id: doc.id,
