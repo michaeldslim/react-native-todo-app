@@ -4,4 +4,5 @@ export interface Todo {
   completed: boolean;
   createdAt: string;
   category?: string;
+  userId?: string;
 }

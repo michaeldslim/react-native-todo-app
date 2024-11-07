@@ -18,6 +18,7 @@ import { RootStackList } from '../navigation/RootNavigator';
 import { useIsFocused } from '@react-navigation/native';
 import TodoItem from './TodoItem';
 import CustomDropdown from './CustomDropdown';
+import { FIREBASE_AUTH } from '../../firebaseConfig';
 
 type TodoListProps = NativeStackScreenProps<RootStackList, 'List'>;
 
@@ -31,11 +32,15 @@ const TodoList = ({ navigation }: TodoListProps) => {
   const [filteredTodos, setFilteredTodos] = useState<Todo[]>([]);
   const [category, setCategory] = useState<string>('Select an option');
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
+  const auth = FIREBASE_AUTH;
 
   useEffect(() => {
     const loadTodos = async () => {
-      const todos = await fetchTodos();
-      setTodos(todos);
+      const userId = auth.currentUser?.uid;
+      if (userId) {
+        const todos = await fetchTodos(userId);
+        setTodos(todos);
+      }
     };
     loadTodos().then();
   }, [isFocused]);
@@ -62,15 +67,18 @@ const TodoList = ({ navigation }: TodoListProps) => {
   };
 
   const handleAddTodo = async () => {
-    if (todo.trim() && category) {
+    const userId = FIREBASE_AUTH.currentUser?.uid;
+
+    if (userId && todo.trim() && category) {
       const todoItem: Omit<Todo, 'id'> = {
         todo,
         completed: false,
         createdAt: new Date().toISOString(),
         category,
+        userId: userId,
       };
       await addTodo(todoItem);
-      const todos = await fetchTodos();
+      const todos = await fetchTodos(userId);
       setTodos(todos);
       setTodo('');
       setCategory('Select an option');
