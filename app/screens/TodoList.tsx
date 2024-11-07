@@ -17,6 +17,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackList } from '../navigation/RootNavigator';
 import { useIsFocused } from '@react-navigation/native';
 import TodoItem from './TodoItem';
+import CustomDropdown from './CustomDropdown';
 
 type TodoListProps = NativeStackScreenProps<RootStackList, 'List'>;
 
@@ -83,16 +84,28 @@ const TodoList = ({ navigation }: TodoListProps) => {
     >
       <View style={styles.container}>
         <View style={styles.form}>
-          <View style={styles.pickerContainer}>
-            <Picker
+          {Platform.OS === 'ios' ? (
+            <CustomDropdown
               selectedValue={category}
+              items={categories}
               onValueChange={(value) => setCategory(value)}
-            >
-              {categories.map((item) => (
-                <Picker.Item key={item} label={item} value={item} />
-              ))}
-            </Picker>
-          </View>
+            />
+          ) : (
+            <View style={styles.pickerContainer}>
+              <Picker
+                selectedValue={category}
+                onValueChange={(value) => setCategory(value)}
+                style={{
+                  color: '#FFFFFF',
+                  fontSize: 16,
+                }}
+              >
+                {categories.map((item) => (
+                  <Picker.Item key={item} label={item} value={item} />
+                ))}
+              </Picker>
+            </View>
+          )}
           <TextInput
             style={
               category !== 'Select an option'
@@ -219,7 +232,8 @@ const styles = StyleSheet.create({
   },
   pickerContainer: {
     marginBottom: 10,
-    borderColor: '#cccccc',
+    borderColor: '#2196f3',
+    backgroundColor: '#2196f3',
     borderWidth: 1,
     borderRadius: 5,
   },
@@ -231,13 +245,14 @@ const styles = StyleSheet.create({
   },
   filterContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
+    justifyContent: 'center',
+    gap: 3,
     marginVertical: 6,
   },
   filterButton: {
-    borderRadius: 12,
-    backgroundColor: '#007bff',
-    paddingVertical: 6,
+    borderRadius: 5,
+    backgroundColor: '#2196f3',
+    paddingVertical: 5,
     paddingHorizontal: 5,
   },
   filterButtonSelected: {
