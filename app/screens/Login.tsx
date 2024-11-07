@@ -12,20 +12,25 @@ import { FIREBASE_AUTH } from '../../firebaseConfig';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackList } from '../navigation/RootNavigator';
+import { getAuthErrorMessage } from '../service/firebaseErrors';
 
 type TodoListProps = NativeStackScreenProps<RootStackList, 'Login'>;
 
 const Login: React.FC<TodoListProps> = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState<string | null>(null);
+
   const auth = FIREBASE_AUTH;
 
   const handleLogin = async () => {
     try {
       await signInWithEmailAndPassword(auth, email, password);
+      setError(null);
       navigation.navigate('List');
-    } catch (error) {
-      console.error(error);
+    } catch (error: any) {
+      console.log(error.code);
+      setError(getAuthErrorMessage(error.code));
     }
   };
 
@@ -36,11 +41,14 @@ const Login: React.FC<TodoListProps> = ({ navigation }) => {
     >
       <View style={styles.container}>
         <Text style={styles.title}>Login</Text>
+        {error && <Text style={styles.errorText}>{error}</Text>}
         <TextInput
           style={styles.input}
           placeholder="Email"
           value={email}
           onChangeText={setEmail}
+          autoCapitalize="none"
+          keyboardType="email-address"
         />
         <TextInput
           style={styles.input}
@@ -78,6 +86,12 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'center',
     marginBottom: 24,
+  },
+  errorText: {
+    color: 'red',
+    fontSize: 14,
+    textAlign: 'center',
+    marginBottom: 10,
   },
   input: {
     height: 50,
