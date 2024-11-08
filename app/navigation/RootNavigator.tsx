@@ -20,7 +20,12 @@ const Stack = createNativeStackNavigator<RootStackList>();
 const RootNavigator = () => {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Login">
+      <Stack.Navigator
+        screenOptions={{
+          headerBackTitleVisible: false,
+        }}
+        initialRouteName="Login"
+      >
         <Stack.Screen
           name="Login"
           component={Login}
@@ -34,7 +39,11 @@ const RootNavigator = () => {
         <Stack.Screen
           name="List"
           component={List}
-          options={{ title: 'Todo List', headerRight: () => <Logout /> }}
+          options={{
+            title: 'Todo List',
+            headerBackVisible: false,
+            headerRight: () => <Logout />,
+          }}
         />
         <Stack.Screen
           name="Detail"
