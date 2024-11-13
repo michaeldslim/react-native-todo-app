@@ -8,7 +8,17 @@ node_modules/
 dist/
 web-build/
 
+ios/build/
+ios/Pods/
+
+android/build/
+android/app/release
+android/app/bin
+android/app/build
+
+build/
 .idea/
+.gradle
 
 # Native
 *.orig.*
