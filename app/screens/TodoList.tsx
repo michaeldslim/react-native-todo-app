@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import React, { useEffect, useState } from 'react';
-import { fetchTodos, addTodo } from '../service/firebaseService';
+import { fetchTodos, addTodo, deleteTodo } from '../service/firebaseService';
 import { Todo } from './types';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackList } from '../navigation/RootNavigator';
@@ -33,10 +33,10 @@ const TodoList = ({ navigation }: TodoListProps) => {
   const [category, setCategory] = useState<string>('Select an option');
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
   const auth = FIREBASE_AUTH;
+  const userId = auth.currentUser?.uid;
 
   useEffect(() => {
     const loadTodos = async () => {
-      const userId = auth.currentUser?.uid;
       if (userId) {
         const todos = await fetchTodos(userId);
         setTodos(todos);
@@ -67,8 +67,6 @@ const TodoList = ({ navigation }: TodoListProps) => {
   };
 
   const handleAddTodo = async () => {
-    const userId = FIREBASE_AUTH.currentUser?.uid;
-
     if (userId && todo.trim() && category) {
       const todoItem: Omit<Todo, 'id'> = {
         todo,
@@ -82,6 +80,15 @@ const TodoList = ({ navigation }: TodoListProps) => {
       setTodos(todos);
       setTodo('');
       setCategory('Select an option');
+    }
+  };
+
+  const confirmDelete = async (todoId: string) => {
+    if (!todoId) return;
+    if (userId) {
+      await deleteTodo(todoId);
+      const todos = await fetchTodos(userId);
+      setTodos(todos);
     }
   };
 
@@ -171,6 +178,7 @@ const TodoList = ({ navigation }: TodoListProps) => {
                 onPress={() =>
                   navigation.navigate('Detail', { todoItem: item })
                 }
+                confirmDelete={confirmDelete}
               />
             )}
             contentContainerStyle={styles.listContent}
@@ -268,6 +276,49 @@ const styles = StyleSheet.create({
   },
   filterButtonTextSelected: {
     color: '#ffd700',
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0,0,0,0.7)',
+  },
+  modalContent: {
+    width: 300,
+    padding: 20,
+    backgroundColor: 'white',
+    borderRadius: 10,
+    alignItems: 'center',
+  },
+  modalText: {
+    fontSize: 18,
+    marginBottom: 20,
+    textAlign: 'center',
+  },
+  modalButtons: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '100%',
+  },
+  modalButtonCancel: {
+    flex: 1,
+    padding: 10,
+    alignItems: 'center',
+    backgroundColor: '#d8d8d8',
+    borderRadius: 5,
+    marginRight: 5,
+  },
+  modalButtonDelete: {
+    flex: 1,
+    padding: 10,
+    alignItems: 'center',
+    backgroundColor: '#f44336',
+    borderRadius: 5,
+    marginLeft: 5,
+  },
+  modalButtonText: {
+    color: 'white',
+    fontSize: 16,
   },
 });
 

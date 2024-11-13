@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { Todo } from './types';
 import { IconButton } from 'react-native-paper';
@@ -6,9 +6,12 @@ import { IconButton } from 'react-native-paper';
 interface TodoItemProps {
   todo: Todo;
   onPress: () => void;
+  confirmDelete: (todoId: string) => void;
 }
 
-const TodoItem: React.FC<TodoItemProps> = ({ todo, onPress }) => {
+const TodoItem: React.FC<TodoItemProps> = ({ todo, onPress, confirmDelete }) => {
+  const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
+
   const isOlderThan3Days = () => {
     try {
       const now = new Date();
@@ -30,9 +33,16 @@ const TodoItem: React.FC<TodoItemProps> = ({ todo, onPress }) => {
       <View style={styles.detailButtonWrapper}>
         <IconButton
           icon={'pencil'}
-          size={25}
+          size={22}
           iconColor={'#ffffff'}
           onPress={onPress}
+        />
+        <IconButton
+          icon={'trash-can'}
+          size={22}
+          iconColor={'#ff5252'}
+          onPress={() => confirmDelete(todo.id)}
+          disabled={todo.completed ? false : true}
         />
       </View>
     </View>
@@ -59,18 +69,19 @@ const styles = StyleSheet.create({
     color: '#0f0f0f',
     fontSize: 16,
     fontWeight: '400',
-    width: '90%',
+    width: '77%',
   },
   notCompleted: {
     alignSelf: 'center',
     color: '#ffffff',
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: '600',
-    width: '90%',
+    width: '77%',
   },
   detailButtonWrapper: {
+    flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'space-around',
   },
   detailButton: {
     backgroundColor: '#2196f3',
