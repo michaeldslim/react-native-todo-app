@@ -80,4 +80,9 @@ module.exports = defaultConfig;
 ```yarn start```
 
 ### Authentication
-- TBD
+- Implemented user sign-up, login, and logout functionality using Firebase authentication.
+
+### Expo prebuild
+- To set up the Android and iOS folders for generating IPA and IPK files. 
+
+```npx expo prebuild```
