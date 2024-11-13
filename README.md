@@ -83,6 +83,16 @@ module.exports = defaultConfig;
 - Implemented user sign-up, login, and logout functionality using Firebase authentication.
 
 ### Expo prebuild
-- To set up the Android and iOS folders for generating IPA and IPK files. 
+- To set up the Android and iOS folders for generating IPA and APK files. 
 
 ```npx expo prebuild```
+
+```cd android```
+
+```./gradlew clean```
+
+```./gradlew assembleRelease```
+
+#### Find the APK file
+
+```android > app > build > outputs > apk > release```
