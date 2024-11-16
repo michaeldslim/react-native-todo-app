@@ -52,6 +52,8 @@ const Signup: React.FC<TodoListProps> = ({ navigation }) => {
           placeholder="Email"
           value={email}
           onChangeText={setEmail}
+          autoCapitalize="none"
+          keyboardType="email-address"
         />
         <TextInput
           style={styles.input}
@@ -59,6 +61,7 @@ const Signup: React.FC<TodoListProps> = ({ navigation }) => {
           value={password}
           secureTextEntry
           onChangeText={setPassword}
+          autoCapitalize="none"
         />
         <TouchableOpacity
           style={[
