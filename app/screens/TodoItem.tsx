@@ -9,7 +9,11 @@ interface TodoItemProps {
   confirmDelete: (todoId: string) => void;
 }
 
-const TodoItem: React.FC<TodoItemProps> = ({ todo, onPress, confirmDelete }) => {
+const TodoItem: React.FC<TodoItemProps> = ({
+  todo,
+  onPress,
+  confirmDelete,
+}) => {
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
 
   const isOlderThan3Days = () => {
@@ -33,13 +37,13 @@ const TodoItem: React.FC<TodoItemProps> = ({ todo, onPress, confirmDelete }) => 
       <View style={styles.detailButtonWrapper}>
         <IconButton
           icon={'pencil'}
-          size={22}
+          size={20}
           iconColor={'#ffffff'}
           onPress={onPress}
         />
         <IconButton
           icon={'trash-can'}
-          size={22}
+          size={20}
           iconColor={'#ff5252'}
           onPress={() => confirmDelete(todo.id)}
           disabled={todo.completed ? false : true}
@@ -67,16 +71,16 @@ const styles = StyleSheet.create({
     textDecorationLine: 'line-through',
     alignSelf: 'center',
     color: '#0f0f0f',
-    fontSize: 16,
-    fontWeight: '400',
-    width: '77%',
+    fontSize: 15,
+    fontWeight: '300',
+    width: '75%',
   },
   notCompleted: {
     alignSelf: 'center',
     color: '#ffffff',
-    fontSize: 18,
-    fontWeight: '600',
-    width: '77%',
+    fontSize: 16,
+    fontWeight: '400',
+    width: '75%',
   },
   detailButtonWrapper: {
     flexDirection: 'row',
