@@ -23,7 +23,14 @@ import { FIREBASE_AUTH } from '../../firebaseConfig';
 
 type TodoListProps = NativeStackScreenProps<RootStackList, 'List'>;
 
-const categories = ['Select an option', 'Home', 'Work', 'Wishlist', 'Others'];
+const categories = [
+  'Select an option',
+  'Home',
+  'Work',
+  'Wishlist',
+  'Chores',
+  'Others',
+];
 const allCategories = ['All', ...categories.slice(1)];
 
 const TodoList = ({ navigation }: TodoListProps) => {
