@@ -12,6 +12,8 @@ export const getAuthErrorMessage = (errorCode: string): string => {
       return 'The password is invalid for the given email, or the account does not have a password set.';
     case 'auth/invalid-credential':
       return 'The password is invalid for the given email, or the account does not have a password set.';
+    case 'auth/weak-password':
+      return 'The password should be at least 6 characters long.';
     default:
       return 'An unknown error occurred. Please try again.';
   }
