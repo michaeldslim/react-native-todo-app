@@ -7,6 +7,7 @@ import {
   StyleSheet,
   Platform,
   KeyboardAvoidingView,
+  Image,
 } from 'react-native';
 import { FIREBASE_AUTH } from '../../firebaseConfig';
 import { signInWithEmailAndPassword } from 'firebase/auth';
@@ -40,6 +41,9 @@ const Login: React.FC<TodoListProps> = ({ navigation }) => {
       style={styles.keyboardAvoidingView}
     >
       <View style={styles.container}>
+        <View style={styles.logoContainer}>
+          <Image source={require('../assets/logo.png')} style={styles.logo} />
+        </View>
         <Text style={styles.title}>Login</Text>
         {error && <Text style={styles.errorText}>{error}</Text>}
         <TextInput
@@ -56,8 +60,16 @@ const Login: React.FC<TodoListProps> = ({ navigation }) => {
           value={password}
           secureTextEntry
           onChangeText={setPassword}
+          autoCapitalize="none"
         />
-        <TouchableOpacity style={styles.button} onPress={handleLogin}>
+        <TouchableOpacity
+          style={[
+            styles.button,
+            email.trim() === '' ? styles.disabledButton : styles.addButton,
+          ]}
+          onPress={handleLogin}
+          disabled={email.trim() === ''}
+        >
           <Text style={styles.buttonText}>Login</Text>
         </TouchableOpacity>
         <TouchableOpacity
@@ -66,6 +78,9 @@ const Login: React.FC<TodoListProps> = ({ navigation }) => {
         >
           <Text style={styles.linkText}>Don't have an account? Signup</Text>
         </TouchableOpacity>
+        <Text style={styles.developerText}>
+          Developed by Mike, powered by React Native
+        </Text>
       </View>
     </KeyboardAvoidingView>
   );
@@ -102,10 +117,15 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     backgroundColor: '#ffffff',
   },
+  disabledButton: {
+    backgroundColor: '#d8d8d8',
+  },
+  addButton: {
+    backgroundColor: '#4caf50',
+  },
   button: {
     height: 50,
     borderRadius: 8,
-    backgroundColor: '#4caf50',
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 12,
@@ -122,6 +142,22 @@ const styles = StyleSheet.create({
   linkText: {
     color: '#1976d2',
     fontSize: 16,
+  },
+  logoContainer: {
+    alignItems: 'center',
+    marginBottom: 30,
+  },
+  logo: {
+    width: 100,
+    height: 100,
+    marginBottom: 30,
+  },
+  developerText: {
+    position: 'absolute',
+    right: 20,
+    bottom: 20,
+    fontSize: 12,
+    color: '#aaa',
   },
 });
 

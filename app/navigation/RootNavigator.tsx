@@ -29,12 +29,12 @@ const RootNavigator = () => {
         <Stack.Screen
           name="Login"
           component={Login}
-          options={{ title: 'Login' }}
+          options={{ title: 'Todo Login' }}
         />
         <Stack.Screen
           name="Signup"
           component={Signup}
-          options={{ title: 'Signup' }}
+          options={{ title: 'Todo Signup' }}
         />
         <Stack.Screen
           name="List"
