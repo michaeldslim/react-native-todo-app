@@ -8,6 +8,7 @@ import {
   TextStyle,
   KeyboardAvoidingView,
   Platform,
+  ScrollView,
 } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import React, { useEffect, useState } from 'react';
@@ -140,33 +141,40 @@ const TodoList = ({ navigation }: TodoListProps) => {
                 styles.button,
                 todo === '' ? styles.disabledButton : styles.addButton,
               ]}
-              disabled={todo === ''}
-              onPress={todo !== '' ? handleAddTodo : () => {}}
+              disabled={todo.trim() === ''}
+              onPress={todo.trim() !== '' ? handleAddTodo : () => {}}
             >
               <Text style={styles.buttonText}>Add Todo</Text>
             </TouchableOpacity>
           </View>
           <View style={styles.filterContainer}>
-            {allCategories.map((category, idx) => (
-              <TouchableOpacity
-                key={idx}
-                style={[
-                  styles.filterButton,
-                  selectedCategory === category && styles.filterButtonSelected,
-                ]}
-                onPress={() => setSelectedCategory(category)}
-              >
-                <Text
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              style={styles.categoryContainer}
+            >
+              {allCategories.map((category, idx) => (
+                <TouchableOpacity
+                  key={idx}
                   style={[
-                    styles.buttonText,
+                    styles.filterButton,
                     selectedCategory === category &&
-                      styles.filterButtonTextSelected,
+                      styles.filterButtonSelected,
                   ]}
+                  onPress={() => setSelectedCategory(category)}
                 >
-                  {category} ({getTotalTodosByCategory(category)})
-                </Text>
-              </TouchableOpacity>
-            ))}
+                  <Text
+                    style={[
+                      styles.buttonText,
+                      selectedCategory === category &&
+                        styles.filterButtonTextSelected,
+                    ]}
+                  >
+                    {category} ({getTotalTodosByCategory(category)})
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </ScrollView>
           </View>
           <FlatList
             data={filteredTodos}
@@ -237,7 +245,7 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: 'white',
-    fontSize: 13,
+    fontSize: 16,
     fontWeight: 'bold',
   } as TextStyle,
   disabledButton: {
@@ -262,11 +270,10 @@ const styles = StyleSheet.create({
   filterContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
-    gap: 3,
     marginVertical: 6,
   },
   filterButton: {
-    borderRadius: 5,
+    borderRadius: 10,
     backgroundColor: '#2196f3',
     paddingVertical: 5,
     paddingHorizontal: 5,
@@ -319,6 +326,9 @@ const styles = StyleSheet.create({
   modalButtonText: {
     color: 'white',
     fontSize: 16,
+  },
+  categoryContainer: {
+    flexDirection: 'row',
   },
 });
 
