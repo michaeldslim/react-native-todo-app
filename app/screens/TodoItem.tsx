@@ -1,5 +1,5 @@
-import React, { useState, useCallback } from 'react';
-import { View, Text, StyleSheet, Dimensions, TouchableOpacity, LayoutChangeEvent } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, Dimensions, TouchableOpacity } from 'react-native';
 import { Todo } from './types';
 import { IconButton } from 'react-native-paper';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
@@ -10,7 +10,7 @@ import Animated, {
   runOnJS,
 } from 'react-native-reanimated';
 
-const SWIPE_THRESHOLD = -75;
+const SWIPE_THRESHOLD = -65;
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
 interface TodoItemProps {
@@ -26,14 +26,7 @@ const TodoItem: React.FC<TodoItemProps> = ({
 }) => {
   const translateX = useSharedValue(0);
   const itemHeight = useSharedValue(50);
-  const [contentHeight, setContentHeight] = useState(50);
   const [isSwipeOpen, setIsSwipeOpen] = useState(false);
-
-  const onLayout = useCallback((event: LayoutChangeEvent) => {
-    const height = event.nativeEvent.layout.height;
-    itemHeight.value = height;
-    setContentHeight(height);
-  }, []);
 
   const gesture = Gesture.Pan()
     .onChange((event) => {
@@ -90,8 +83,7 @@ const TodoItem: React.FC<TodoItemProps> = ({
       // Hide the container completely when not fully swiped
       transform: [{ translateX: isFullyOpen ? 0 : 100 }],
       pointerEvents: isFullyOpen ? 'auto' : 'none',
-      backgroundColor: todo.completed ? '#ff5252' : '#999999',
-      height: contentHeight,
+      backgroundColor: '#f7f7f7',
     };
   });
 
@@ -140,13 +132,13 @@ const TodoItem: React.FC<TodoItemProps> = ({
         <Animated.View style={[styles.deleteContainer, rIconContainerStyle]}>
           <TouchableOpacity
             onPress={handleDelete}
-            style={styles.deleteButton}
+            style={[styles.deleteButton]}
             activeOpacity={0.7}
           >
             <IconButton
               icon="trash-can"
-              size={24}
-              iconColor={todo.completed ? '#fff' : '#666666'}
+              size={36}
+              iconColor="#ff4444"
             />
           </TouchableOpacity>
         </Animated.View>
@@ -157,53 +149,60 @@ const TodoItem: React.FC<TodoItemProps> = ({
 
 const styles = StyleSheet.create({
   rowContainer: {
+    flex: 1,
     width: '100%',
-    alignItems: 'center',
-    marginBottom: 6,
-    marginTop: 2,
+    marginBottom: 16,
+    marginTop: 6,
   },
   container: {
+    flex: 1,
     width: '100%',
     position: 'relative',
   },
   swipeableContent: {
+    flex: 1,
     width: '100%',
   },
   innerContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
     backgroundColor: '#2196f3',
     borderRadius: 5,
-    padding: 12,
-    width: '100%',
-    minHeight: 50,
-    justifyContent: 'center',
+    paddingHorizontal: 12,
+    paddingVertical: 14,
+    minHeight: 65,
   },
   todoText: {
-    fontSize: 16,
+    flex: 1,
+    fontSize: 19,
+    textAlignVertical: 'center',
+    paddingVertical: 2,
   },
   completed: {
     textDecorationLine: 'line-through',
     color: '#0f0f0f',
-    fontWeight: '300',
+    fontWeight: '400',
   },
   notCompleted: {
     color: '#ffffff',
     fontWeight: '400',
   },
   deleteContainer: {
-    width: SWIPE_THRESHOLD * -1,
-    height: '100%',
+    width: Math.abs(SWIPE_THRESHOLD),
     position: 'absolute',
     right: 0,
-    alignItems: 'center',
+    height: '100%',
     justifyContent: 'center',
-    borderRadius: 5,
-    overflow: 'hidden',
+    alignItems: 'center',
+    backgroundColor: '#f7f7f7',
   },
   deleteButton: {
-    width: '100%',
+    marginTop: 5,
+    width: Math.abs(SWIPE_THRESHOLD),
     height: '100%',
-    alignItems: 'center',
     justifyContent: 'center',
+    alignItems: 'center',
   },
   oldTodo: {
     backgroundColor: '#dca470',
