@@ -41,7 +41,7 @@ const TodoList = ({ navigation }: TodoListProps) => {
   const [filteredTodos, setFilteredTodos] = useState<Todo[]>([]);
   const [category, setCategory] = useState<string>('Select an option');
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
-  const [refreshing, setRefreshing] = useState(false);
+  const [refreshing, setRefreshing] = useState<boolean>(false);
   const auth = FIREBASE_AUTH;
   const userId = auth.currentUser?.uid;
 
