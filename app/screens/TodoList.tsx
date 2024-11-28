@@ -9,9 +9,10 @@ import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
+  RefreshControl,
 } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { fetchTodos, addTodo, deleteTodo } from '../service/firebaseService';
 import { Todo } from './types';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -40,6 +41,7 @@ const TodoList = ({ navigation }: TodoListProps) => {
   const [filteredTodos, setFilteredTodos] = useState<Todo[]>([]);
   const [category, setCategory] = useState<string>('Select an option');
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
+  const [refreshing, setRefreshing] = useState<boolean>(false);
   const auth = FIREBASE_AUTH;
   const userId = auth.currentUser?.uid;
 
@@ -99,6 +101,19 @@ const TodoList = ({ navigation }: TodoListProps) => {
       setTodos(todos);
     }
   };
+
+  const onRefresh = useCallback(async () => {
+    if (!userId) return;
+    setRefreshing(true);
+    try {
+      const todos = await fetchTodos(userId);
+      setTodos(todos);
+    } catch (error) {
+      console.error('Error refreshing todos:', error);
+    } finally {
+      setRefreshing(false);
+    }
+  }, [userId]);
 
   return (
     <KeyboardAvoidingView
@@ -187,6 +202,9 @@ const TodoList = ({ navigation }: TodoListProps) => {
             data={filteredTodos}
             keyExtractor={(item) => item.id}
             style={{ padding: 5 }}
+            refreshControl={
+              <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+            }
             renderItem={({ item }) => (
               <TodoItem
                 todo={item}
