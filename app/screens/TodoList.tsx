@@ -10,6 +10,7 @@ import {
   Platform,
   ScrollView,
   RefreshControl,
+  SafeAreaView,
 } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import React, { useEffect, useState, useCallback } from 'react';
@@ -21,6 +22,7 @@ import { useIsFocused } from '@react-navigation/native';
 import TodoItem from './TodoItem';
 import CustomDropdown from './CustomDropdown';
 import { FIREBASE_AUTH } from '../../firebaseConfig';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 type TodoListProps = NativeStackScreenProps<RootStackList, 'List'>;
 
@@ -119,105 +121,113 @@ const TodoList = ({ navigation }: TodoListProps) => {
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       style={styles.keyboardAvoidingView}
+      keyboardVerticalOffset={Platform.OS === 'ios' ? 90 : 0}
     >
-      <View style={styles.container}>
-        <View style={styles.form}>
-          {Platform.OS === 'ios' ? (
-            <CustomDropdown
-              selectedValue={category}
-              items={categories}
-              onValueChange={(value) => setCategory(value)}
-            />
-          ) : (
-            <View style={styles.pickerContainer}>
-              <Picker
+      <SafeAreaView style={styles.safeArea}>
+        <GestureHandlerRootView style={styles.container}>
+          <View style={styles.inputSection}>
+            {Platform.OS === 'ios' ? (
+              <CustomDropdown
                 selectedValue={category}
+                items={categories}
                 onValueChange={(value) => setCategory(value)}
-                style={{
-                  color: '#FFFFFF',
-                  fontSize: 16,
-                }}
-              >
-                {categories.map((item) => (
-                  <Picker.Item key={item} label={item} value={item} />
-                ))}
-              </Picker>
-            </View>
-          )}
-          <TextInput
-            style={
-              category !== 'Select an option'
-                ? styles.activeInput
-                : styles.inActiveInput
-            }
-            placeholder={'Add new todo'}
-            onChangeText={(text: string) => setTodo(text)}
-            value={todo}
-            maxLength={200}
-            multiline={true}
-            editable={category !== 'Select an option'}
-          />
-          <View style={styles.buttonContainer}>
-            <TouchableOpacity
-              style={[
-                styles.button,
-                todo === '' ? styles.disabledButton : styles.addButton,
-              ]}
-              disabled={todo.trim() === ''}
-              onPress={todo.trim() !== '' ? handleAddTodo : () => {}}
-            >
-              <Text style={styles.buttonText}>Add Todo</Text>
-            </TouchableOpacity>
-          </View>
-          <View style={styles.filterContainer}>
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              style={styles.categoryContainer}
-            >
-              {allCategories.map((category, idx) => (
-                <TouchableOpacity
-                  key={idx}
-                  style={[
-                    styles.filterButton,
-                    selectedCategory === category &&
-                      styles.filterButtonSelected,
-                  ]}
-                  onPress={() => setSelectedCategory(category)}
-                >
-                  <Text
-                    style={[
-                      styles.buttonText,
-                      selectedCategory === category &&
-                        styles.filterButtonTextSelected,
-                    ]}
-                  >
-                    {category} ({getTotalTodosByCategory(category)})
-                  </Text>
-                </TouchableOpacity>
-              ))}
-            </ScrollView>
-          </View>
-          <FlatList
-            data={filteredTodos}
-            keyExtractor={(item) => item.id}
-            style={{ padding: 5 }}
-            refreshControl={
-              <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-            }
-            renderItem={({ item }) => (
-              <TodoItem
-                todo={item}
-                onPress={() =>
-                  navigation.navigate('Detail', { todoItem: item })
-                }
-                confirmDelete={confirmDelete}
               />
+            ) : (
+              <View style={styles.pickerContainer}>
+                <Picker
+                  selectedValue={category}
+                  onValueChange={(value) => setCategory(value)}
+                  style={{
+                    color: '#FFFFFF',
+                    fontSize: 16,
+                  }}
+                >
+                  {categories.map((item) => (
+                    <Picker.Item key={item} label={item} value={item} />
+                  ))}
+                </Picker>
+              </View>
             )}
-            contentContainerStyle={styles.listContent}
-          />
-        </View>
-      </View>
+            <TextInput
+              style={
+                category !== 'Select an option'
+                  ? styles.activeInput
+                  : styles.inActiveInput
+              }
+              placeholder={'Add new todo'}
+              onChangeText={(text: string) => setTodo(text)}
+              value={todo}
+              maxLength={200}
+              multiline={true}
+              editable={category !== 'Select an option'}
+            />
+            <View style={styles.buttonContainer}>
+              <TouchableOpacity
+                style={[
+                  styles.button,
+                  todo === '' ? styles.disabledButton : styles.addButton,
+                ]}
+                disabled={todo.trim() === ''}
+                onPress={todo.trim() !== '' ? handleAddTodo : () => {}}
+              >
+                <Text style={styles.buttonText}>Add Todo</Text>
+              </TouchableOpacity>
+            </View>
+            <View style={styles.filterContainer}>
+              <ScrollView
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                style={styles.categoryContainer}
+              >
+                {allCategories.map((category, idx) => (
+                  <TouchableOpacity
+                    key={idx}
+                    style={[
+                      styles.filterButton,
+                      selectedCategory === category &&
+                        styles.filterButtonSelected,
+                    ]}
+                    onPress={() => setSelectedCategory(category)}
+                  >
+                    <Text
+                      style={[
+                        styles.buttonText,
+                        selectedCategory === category &&
+                          styles.filterButtonTextSelected,
+                      ]}
+                    >
+                      {category} ({getTotalTodosByCategory(category)})
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+              </ScrollView>
+            </View>
+          </View>
+          <View style={styles.listContainer}>
+            <FlatList
+              data={filteredTodos}
+              keyExtractor={(item) => item.id}
+              refreshControl={
+                <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+              }
+              renderItem={({ item }) => (
+                <TodoItem
+                  todo={item}
+                  onPress={() =>
+                    navigation.navigate('Detail', { todoItem: item })
+                  }
+                  confirmDelete={confirmDelete}
+                />
+              )}
+              contentContainerStyle={styles.listContentContainer}
+              showsVerticalScrollIndicator={true}
+              ListFooterComponent={<View style={styles.listFooter} />}
+              ListHeaderComponent={<View style={styles.listHeader} />}
+              style={styles.flatList}
+            />
+          </View>
+        </GestureHandlerRootView>
+      </SafeAreaView>
     </KeyboardAvoidingView>
   );
 };
@@ -225,16 +235,36 @@ const TodoList = ({ navigation }: TodoListProps) => {
 const styles = StyleSheet.create({
   keyboardAvoidingView: {
     flex: 1,
+    backgroundColor: '#fff',
+  },
+  safeArea: {
+    flex: 1,
   },
   container: {
     flex: 1,
     marginHorizontal: 10,
   },
-  listContent: {
-    paddingBottom: 16,
+  inputSection: {
+    paddingVertical: 10,
+  },
+  listContainer: {
+    flex: 1,
+  },
+  flatList: {
+    flex: 1,
+  },
+  listContentContainer: {
+    paddingHorizontal: 5,
+    paddingVertical: 5,
+    paddingBottom: Platform.OS === 'ios' ? 40 : 20,
+  },
+  listFooter: {
+    height: Platform.OS === 'ios' ? 40 : 20,
+  },
+  listHeader: {
+    height: 1,
   },
   form: {
-    flex: 1,
     marginVertical: 10,
     flexDirection: 'column',
   },

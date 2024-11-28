@@ -29,6 +29,7 @@ const TodoItem: React.FC<TodoItemProps> = ({
   const [isSwipeOpen, setIsSwipeOpen] = useState(false);
 
   const gesture = Gesture.Pan()
+    .activeOffsetX([-10, 10]) // Only activate gesture when horizontal movement exceeds 10 units
     .onChange((event) => {
       // Only allow swipe for completed todos
       if (!todo.completed) {
@@ -175,7 +176,7 @@ const styles = StyleSheet.create({
   },
   todoText: {
     flex: 1,
-    fontSize: 19,
+    fontSize: 17,
     textAlignVertical: 'center',
     paddingVertical: 2,
   },
