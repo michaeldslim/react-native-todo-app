@@ -155,7 +155,7 @@ const TodoList = ({ navigation }: TodoListProps) => {
                   : styles.inActiveInput
               }
               placeholder={'Add new todo'}
-              onChangeText={(text: string) => setTodo(text)}
+              onChangeText={(text: string) => setTodo(text.trimStart())}
               value={todo}
               maxLength={200}
               multiline={true}
@@ -165,10 +165,12 @@ const TodoList = ({ navigation }: TodoListProps) => {
               <TouchableOpacity
                 style={[
                   styles.button,
-                  todo === '' ? styles.disabledButton : styles.addButton,
+                  todo.trim().length < 2
+                    ? styles.disabledButton
+                    : styles.addButton,
                 ]}
-                disabled={todo.trim() === ''}
-                onPress={todo.trim() !== '' ? handleAddTodo : () => {}}
+                disabled={todo.trim().length < 2}
+                onPress={todo.trim().length > 2 ? handleAddTodo : () => {}}
               >
                 <Text style={styles.buttonText}>Add Todo</Text>
               </TouchableOpacity>
