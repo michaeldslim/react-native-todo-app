@@ -18,8 +18,8 @@ import { getAuthErrorMessage } from '../service/firebaseErrors';
 type TodoListProps = NativeStackScreenProps<RootStackList, 'Login'>;
 
 const Login: React.FC<TodoListProps> = ({ navigation }) => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
   const [error, setError] = useState<string | null>(null);
 
   const auth = FIREBASE_AUTH;
@@ -50,7 +50,7 @@ const Login: React.FC<TodoListProps> = ({ navigation }) => {
           style={styles.input}
           placeholder="Email"
           value={email}
-          onChangeText={setEmail}
+          onChangeText={(e) => setEmail(e.trim())}
           autoCapitalize="none"
           keyboardType="email-address"
         />
@@ -59,7 +59,7 @@ const Login: React.FC<TodoListProps> = ({ navigation }) => {
           placeholder="Password"
           value={password}
           secureTextEntry
-          onChangeText={setPassword}
+          onChangeText={(e) => setPassword(e.trim())}
           autoCapitalize="none"
         />
         <TouchableOpacity

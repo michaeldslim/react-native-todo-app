@@ -66,7 +66,7 @@ const TodoDetail = ({ route, navigation }: TodoDetailProps) => {
         <TextInput
           style={styles.input}
           value={editTodo}
-          onChangeText={setEditTodo}
+          onChangeText={(text) => setEditTodo(text.trimStart())}
           placeholder="Edit Todo Title"
           maxLength={200}
           multiline={true}
