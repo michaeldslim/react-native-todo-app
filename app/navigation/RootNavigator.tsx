@@ -7,6 +7,8 @@ import { Todo } from '../screens/types';
 import Login from '../screens/Login';
 import Signup from '../screens/Signup';
 import Logout from '../screens/Logout';
+import AdminPage from '../screens/AdminPage';
+import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
 
 export type RootStackList = {
   List: undefined;
@@ -14,9 +16,32 @@ export type RootStackList = {
   Login: undefined;
   Signup: undefined;
   Logout: undefined;
+  AdminPage: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackList>();
+
+const AdminButton: React.FC<{ onPress: () => void }> = ({ onPress }) => (
+  <TouchableOpacity onPress={onPress} style={styles.button}>
+    <Text style={styles.buttonText}>Admin</Text>
+  </TouchableOpacity>
+);
+
+const styles = StyleSheet.create({
+  button: {
+    paddingHorizontal: 5,
+    paddingVertical: 5,
+    backgroundColor: '#4caf50',
+    borderRadius: 8,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  buttonText: {
+    color: '#ffffff',
+    fontSize: 14,
+    fontWeight: 'bold',
+  },
+});
 
 const RootNavigator = () => {
   return (
@@ -41,16 +66,27 @@ const RootNavigator = () => {
           <Stack.Screen
             name="List"
             component={List}
-            options={{
+            options={({ navigation }) => ({
               title: 'Todo List',
               headerBackVisible: false,
-              headerRight: () => <Logout />,
-            }}
+              headerRight: () => (
+                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                  <AdminButton onPress={() => navigation.navigate('AdminPage')} />
+                  <View style={{ width: 5 }} />
+                  <Logout />
+                </View>
+              ),
+            })}
           />
           <Stack.Screen
             name="Detail"
             component={Detail}
             options={{ title: 'Todo Detail' }}
+          />
+          <Stack.Screen
+            name="AdminPage"
+            component={AdminPage}
+            options={{ title: 'Admin Page' }}
           />
         </Stack.Navigator>
       </NavigationContainer>

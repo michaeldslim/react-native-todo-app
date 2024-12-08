@@ -11,10 +11,11 @@ import {
   ScrollView,
   RefreshControl,
   SafeAreaView,
+  Alert,
 } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import React, { useEffect, useState, useCallback } from 'react';
-import { fetchTodos, addTodo, deleteTodo } from '../service/firebaseService';
+import { fetchTodos, addTodo, deleteTodo, fetchCategories } from '../service/firebaseService';
 import { Todo } from './types';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackList } from '../navigation/RootNavigator';
@@ -26,16 +27,6 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 type TodoListProps = NativeStackScreenProps<RootStackList, 'List'>;
 
-const categories = [
-  'Select an option',
-  'Home',
-  'Work',
-  'Wishlist',
-  'Chores',
-  'Others',
-];
-const allCategories = ['All', ...categories.slice(1)];
-
 const TodoList = ({ navigation }: TodoListProps) => {
   const isFocused = useIsFocused();
   const [todo, setTodo] = useState<string>('');
@@ -44,8 +35,19 @@ const TodoList = ({ navigation }: TodoListProps) => {
   const [category, setCategory] = useState<string>('Select an option');
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
   const [refreshing, setRefreshing] = useState<boolean>(false);
+  const [categories, setCategories] = useState<string[]>(['Select an option']);
   const auth = FIREBASE_AUTH;
   const userId = auth.currentUser?.uid;
+
+  const filterTodos = useCallback(() => {
+    if (selectedCategory === 'All') {
+      setFilteredTodos(todos);
+    } else {
+      setFilteredTodos(
+        todos.filter((todo) => todo.category === selectedCategory),
+      );
+    }
+  }, [todos, selectedCategory]);
 
   useEffect(() => {
     const loadTodos = async () => {
@@ -55,21 +57,25 @@ const TodoList = ({ navigation }: TodoListProps) => {
       }
     };
     loadTodos().then();
-  }, [isFocused]);
+  }, [userId, isFocused]);
 
   useEffect(() => {
+    const loadCategories = async () => {
+      if (userId) {
+        try {
+          const fetchedCategories = await fetchCategories(userId);
+          setCategories(['Select an option', ...fetchedCategories]);
+        } catch (error) {
+          Alert.alert('Error', 'Failed to load categories');
+        }
+      }
+    };
+    loadCategories();
+  }, [userId, isFocused]);
+  
+  useEffect(() => {
     filterTodos();
-  }, [todos, selectedCategory]);
-
-  const filterTodos = () => {
-    if (selectedCategory === 'All') {
-      setFilteredTodos(todos);
-    } else {
-      setFilteredTodos(
-        todos.filter((todo) => todo.category === selectedCategory),
-      );
-    }
-  };
+  }, [todos, selectedCategory, filterTodos]);
 
   const getTotalTodosByCategory = (category: string) => {
     if (category === 'All') {
@@ -181,7 +187,7 @@ const TodoList = ({ navigation }: TodoListProps) => {
                 showsHorizontalScrollIndicator={false}
                 style={styles.categoryContainer}
               >
-                {allCategories.map((category, idx) => (
+                {['All', ...categories.slice(1)].map((category, idx) => (
                   <TouchableOpacity
                     key={idx}
                     style={[
