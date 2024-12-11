@@ -16,13 +16,13 @@ import { getAuth } from 'firebase/auth';
 import { changePassword, addCategories, fetchCategories, updateCategory, deleteCategory } from '../service/firebaseService';
 
 const AdminPage = () => {
-  const [currentPassword, setCurrentPassword] = useState('');
-  const [newPassword, setNewPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [newCategory, setNewCategory] = useState('');
+  const [currentPassword, setCurrentPassword] = useState<string>('');
+  const [newPassword, setNewPassword] = useState<string>('');
+  const [confirmPassword, setConfirmPassword] = useState<string>('');
+  const [newCategory, setNewCategory] = useState<string>('');
   const [categories, setCategories] = useState<string[]>([]);
   const [editingCategory, setEditingCategory] = useState<string | null>(null);
-  const [editedCategoryText, setEditedCategoryText] = useState('');
+  const [editedCategoryText, setEditedCategoryText] = useState<string>('');
   const isFocused = useIsFocused();
   const userId = getAuth().currentUser?.uid;
 
