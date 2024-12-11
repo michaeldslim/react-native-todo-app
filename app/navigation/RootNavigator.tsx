@@ -27,22 +27,6 @@ const AdminButton: React.FC<{ onPress: () => void }> = ({ onPress }) => (
   </TouchableOpacity>
 );
 
-const styles = StyleSheet.create({
-  button: {
-    paddingHorizontal: 5,
-    paddingVertical: 5,
-    backgroundColor: '#4caf50',
-    borderRadius: 8,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  buttonText: {
-    color: '#ffffff',
-    fontSize: 14,
-    fontWeight: 'bold',
-  },
-});
-
 const RootNavigator = () => {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
@@ -93,5 +77,23 @@ const RootNavigator = () => {
     </GestureHandlerRootView>
   );
 };
+
+const styles = StyleSheet.create({
+  button: {
+    paddingHorizontal: 5,
+    paddingVertical: 5,
+    backgroundColor: '#fff',
+    borderWidth: 2,
+    borderColor: '#4caf50',
+    borderRadius: 15,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  buttonText: {
+    color: '#4caf50',
+    fontSize: 14,
+    fontWeight: 'bold',
+  },
+});
 
 export default RootNavigator;

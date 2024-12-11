@@ -15,7 +15,12 @@ import {
 } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import React, { useEffect, useState, useCallback } from 'react';
-import { fetchTodos, addTodo, deleteTodo, fetchCategories } from '../service/firebaseService';
+import {
+  fetchTodos,
+  addTodo,
+  deleteTodo,
+  fetchCategories,
+} from '../service/firebaseService';
 import { Todo } from './types';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackList } from '../navigation/RootNavigator';
@@ -72,7 +77,7 @@ const TodoList = ({ navigation }: TodoListProps) => {
     };
     loadCategories();
   }, [userId, isFocused]);
-  
+
   useEffect(() => {
     filterTodos();
   }, [todos, selectedCategory, filterTodos]);
@@ -307,7 +312,7 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   buttonText: {
-    color: 'white',
+    color: '#4a4a4a',
     fontSize: 16,
     fontWeight: 'bold',
   } as TextStyle,
@@ -336,16 +341,20 @@ const styles = StyleSheet.create({
     marginVertical: 6,
   },
   filterButton: {
-    borderRadius: 10,
-    backgroundColor: '#2196f3',
+    borderRadius: 15,
+    backgroundColor: '#fff',
+    borderWidth: 2,
+    borderColor: '#4a4a4a',
     paddingVertical: 5,
     paddingHorizontal: 5,
+    marginRight: 3,
   },
   filterButtonSelected: {
-    backgroundColor: '#0056b3',
+    backgroundColor: '#f0f0f0',
+    borderColor: '#4a4a4a',
   },
   filterButtonTextSelected: {
-    color: '#ffd700',
+    color: '#4a4a4a',
   },
   modalContainer: {
     flex: 1,
