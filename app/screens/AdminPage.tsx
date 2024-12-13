@@ -33,7 +33,11 @@ const AdminPage = () => {
           const fetchedCategories = await fetchCategories(userId);
           setCategories(fetchedCategories);
         } catch (error) {
-          Alert.alert('Error', 'Failed to load categories');
+          if (error instanceof Error) {
+            Alert.alert('Error', `Failed to load categories: ${error.message}`);
+          } else {
+            Alert.alert('Error', 'An unknown error occurred');
+          }
         }
       }
     };
@@ -55,7 +59,11 @@ const AdminPage = () => {
       setNewPassword('');
       setConfirmPassword('');
     } catch (error) {
-      Alert.alert('Error', error instanceof Error ? error.message : 'An unknown error occurred');
+      if (error instanceof Error) {
+        Alert.alert('Error', `Failed to change password: ${error.message}`);
+      } else {
+        Alert.alert('Error', 'An unknown error occurred');
+      }
     }
   };
 
@@ -74,7 +82,11 @@ const AdminPage = () => {
         Alert.alert('Error', 'User not authenticated');
       }
     } catch (error) {
-      Alert.alert('Error', 'Failed to add categories');
+      if (error instanceof Error) {
+        Alert.alert('Error', `Failed to add categories: ${error.message}`);
+      } else {
+        Alert.alert('Error', 'An unknown error occurred');
+      }
     }
     setCategories([...categories, ...newCategories]);
     setNewCategory('');
@@ -112,7 +124,11 @@ const AdminPage = () => {
         Alert.alert('Success', 'Category updated successfully');
       }
     } catch (error) {
-      Alert.alert('Error', 'Failed to update category');
+      if (error instanceof Error) {
+        Alert.alert('Error', `Failed to update category: ${error.message}`);
+      } else {
+        Alert.alert('Error', 'An unknown error occurred');
+      }
     }
   };
 
@@ -138,7 +154,11 @@ const AdminPage = () => {
                 Alert.alert('Success', 'Category deleted successfully');
               }
             } catch (error) {
-              Alert.alert('Error', 'Failed to delete category');
+              if (error instanceof Error) {
+                Alert.alert('Error', `Failed to delete category: ${error.message}`);
+              } else {
+                Alert.alert('Error', 'An unknown error occurred');
+              }
             }
           }
         }
