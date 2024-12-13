@@ -71,7 +71,11 @@ const TodoList = ({ navigation }: TodoListProps) => {
           const fetchedCategories = await fetchCategories(userId);
           setCategories(['Select an option', ...fetchedCategories]);
         } catch (error) {
-          Alert.alert('Error', 'Failed to load categories');
+          if (error instanceof Error) {
+            Alert.alert('Error', `Failed to load categories: ${error.message}`);
+          } else {
+            Alert.alert('Error', 'An unknown error occurred');
+          }
         }
       }
     };
