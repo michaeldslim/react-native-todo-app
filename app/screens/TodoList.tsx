@@ -183,7 +183,7 @@ const TodoList = ({ navigation }: TodoListProps) => {
                 disabled={todo.trim().length < 2}
                 onPress={todo.trim().length > 2 ? handleAddTodo : () => {}}
               >
-                <Text style={styles.buttonText}>Add Todo</Text>
+                <Text style={styles.addButtonText}>Add Todo</Text>
               </TouchableOpacity>
             </View>
             <View style={styles.filterContainer}>
@@ -313,6 +313,11 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: '#4a4a4a',
+    fontSize: 16,
+    fontWeight: 'bold',
+  } as TextStyle,
+  addButtonText: {
+    color: '#ffffff',
     fontSize: 16,
     fontWeight: 'bold',
   } as TextStyle,
