@@ -139,7 +139,7 @@ const AdminPage = () => {
       [
         {
           text: 'Cancel',
-          style: 'cancel'
+          style: 'cancel',
         },
         {
           text: 'Delete',
