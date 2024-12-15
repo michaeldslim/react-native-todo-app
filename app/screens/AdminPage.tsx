@@ -13,7 +13,13 @@ import {
 } from 'react-native';
 import { useIsFocused } from '@react-navigation/native';
 import { getAuth } from 'firebase/auth';
-import { changePassword, addCategories, fetchCategories, updateCategory, deleteCategory } from '../service/firebaseService';
+import {
+  changePassword,
+  addCategories,
+  fetchCategories,
+  updateCategory,
+  deleteCategory,
+} from '../service/firebaseService';
 
 const AdminPage = () => {
   const [currentPassword, setCurrentPassword] = useState<string>('');
@@ -41,9 +47,9 @@ const AdminPage = () => {
         }
       }
     };
-    
+
     if (isFocused) {
-      loadCategories();
+      loadCategories().then();
     }
   }, [userId, isFocused]);
 
@@ -68,7 +74,7 @@ const AdminPage = () => {
   };
 
   const handleAddCategory = async () => {
-    const newCategories = newCategory.split(',').map(cat => cat.trim());
+    const newCategories = newCategory.split(',').map((cat) => cat.trim());
     if (categories.length + newCategories.length > 7) {
       Alert.alert('Error', 'You cannot add more than 7 categories.');
       return;
@@ -103,10 +109,13 @@ const AdminPage = () => {
       return;
     }
 
-    if (categories.some(cat => 
-      cat.toLowerCase() === editedCategoryText.toLowerCase() && 
-      cat.toLowerCase() !== oldCategory.toLowerCase()
-    )) {
+    if (
+      categories.some(
+        (cat) =>
+          cat.toLowerCase() === editedCategoryText.toLowerCase() &&
+          cat.toLowerCase() !== oldCategory.toLowerCase(),
+      )
+    ) {
       Alert.alert('Error', 'This category already exists');
       return;
     }
@@ -115,9 +124,9 @@ const AdminPage = () => {
       const user = getAuth().currentUser;
       if (user) {
         await updateCategory(user.uid, oldCategory, editedCategoryText.trim());
-        const updatedCategories = categories.map(cat => 
-          cat === oldCategory ? editedCategoryText.trim() : cat
-        ).sort((a, b) => a.localeCompare(b));
+        const updatedCategories = categories
+          .map((cat) => (cat === oldCategory ? editedCategoryText.trim() : cat))
+          .sort((a, b) => a.localeCompare(b));
         setCategories(updatedCategories);
         setEditingCategory(null);
         setEditedCategoryText('');
@@ -149,20 +158,25 @@ const AdminPage = () => {
               const user = getAuth().currentUser;
               if (user) {
                 await deleteCategory(user.uid, categoryToDelete);
-                const updatedCategories = categories.filter(cat => cat !== categoryToDelete);
+                const updatedCategories = categories.filter(
+                  (cat) => cat !== categoryToDelete,
+                );
                 setCategories(updatedCategories);
                 Alert.alert('Success', 'Category deleted successfully');
               }
             } catch (error) {
               if (error instanceof Error) {
-                Alert.alert('Error', `Failed to delete category: ${error.message}`);
+                Alert.alert(
+                  'Error',
+                  `Failed to delete category: ${error.message}`,
+                );
               } else {
                 Alert.alert('Error', 'An unknown error occurred');
               }
             }
-          }
-        }
-      ]
+          },
+        },
+      ],
     );
   };
 
@@ -174,22 +188,25 @@ const AdminPage = () => {
     >
       <SafeAreaView style={styles.container}>
         <ScrollView style={styles.scrollView}>
-          <View style={styles.container}>            
+          <View style={styles.container}>
             <View style={styles.section}>
               <Text style={styles.subtitle}>Add New Category</Text>
-              <Text style={styles.instructions}>Enter categories separated by commas (e.g., Work, Personal, Shopping)</Text>
+              <Text style={styles.instructions}>
+                Enter categories separated by commas (e.g., Work, Personal,
+                Shopping)
+              </Text>
               <TextInput
                 style={styles.input}
                 placeholder="New Categories"
                 value={newCategory}
                 onChangeText={setNewCategory}
               />
-              <TouchableOpacity 
+              <TouchableOpacity
                 onPress={handleAddCategory}
                 disabled={newCategory.trim().length < 2}
                 style={[
                   styles.button,
-                  newCategory.trim().length < 2 && styles.buttonDisabled
+                  newCategory.trim().length < 2 && styles.buttonDisabled,
                 ]}
               >
                 <Text style={styles.buttonText}>Add Category</Text>
@@ -208,13 +225,19 @@ const AdminPage = () => {
                             placeholder="Edit category"
                           />
                           <TouchableOpacity
-                            style={[styles.editButton, { backgroundColor: '#4CAF50' }]}
+                            style={[
+                              styles.editButton,
+                              { backgroundColor: '#4CAF50' },
+                            ]}
                             onPress={() => handleUpdateCategory(category)}
                           >
                             <Text style={styles.buttonText}>Save</Text>
                           </TouchableOpacity>
                           <TouchableOpacity
-                            style={[styles.editButton, { backgroundColor: '#f44336' }]}
+                            style={[
+                              styles.editButton,
+                              { backgroundColor: '#f44336' },
+                            ]}
                             onPress={() => setEditingCategory(null)}
                           >
                             <Text style={styles.buttonText}>Cancel</Text>
@@ -225,13 +248,19 @@ const AdminPage = () => {
                           <Text style={styles.categoryText}>{category}</Text>
                           <View style={styles.categoryButtons}>
                             <TouchableOpacity
-                              style={[styles.editButton, { backgroundColor: '#2196F3' }]}
+                              style={[
+                                styles.editButton,
+                                { backgroundColor: '#2196F3' },
+                              ]}
                               onPress={() => handleEditCategory(category)}
                             >
                               <Text style={styles.buttonText}>Edit</Text>
                             </TouchableOpacity>
                             <TouchableOpacity
-                              style={[styles.editButton, { backgroundColor: '#f44336' }]}
+                              style={[
+                                styles.editButton,
+                                { backgroundColor: '#f44336' },
+                              ]}
                               onPress={() => handleDeleteCategory(category)}
                             >
                               <Text style={styles.buttonText}>Delete</Text>
@@ -244,7 +273,7 @@ const AdminPage = () => {
                 </View>
               )}
             </View>
-            
+
             <View style={styles.section}>
               <Text style={styles.subtitle}>Change Password</Text>
               <TextInput
@@ -270,10 +299,17 @@ const AdminPage = () => {
               />
               <TouchableOpacity
                 onPress={handleChangePassword}
-                disabled={!currentPassword || !newPassword || newPassword !== confirmPassword}
+                disabled={
+                  !currentPassword ||
+                  !newPassword ||
+                  newPassword !== confirmPassword
+                }
                 style={[
                   styles.button,
-                  (!currentPassword || !newPassword || newPassword !== confirmPassword) && styles.buttonDisabled
+                  (!currentPassword ||
+                    !newPassword ||
+                    newPassword !== confirmPassword) &&
+                    styles.buttonDisabled,
                 ]}
               >
                 <Text style={styles.buttonText}>Change Password</Text>
