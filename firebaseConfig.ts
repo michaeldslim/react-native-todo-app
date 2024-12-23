@@ -4,7 +4,6 @@ Copyright (C) 2024 Michael Lim - React Native Todo App - This software is free t
 import { initializeApp } from 'firebase/app';
 import {
   initializeAuth,
-  getAuth,
   getReactNativePersistence,
 } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';

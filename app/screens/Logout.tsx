@@ -2,7 +2,7 @@
 Copyright (C) 2024 Michael Lim - React Native Todo App - This software is free to use, modify, and share under the terms of the GNU General Public License v3.
 */
 import React from 'react';
-import { TouchableOpacity, Text, StyleSheet } from 'react-native';
+import { TouchableOpacity, Text, StyleSheet, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { FIREBASE_AUTH } from '../../firebaseConfig';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -19,7 +19,11 @@ const Logout: React.FC = () => {
       await auth.signOut();
       navigation.navigate('Login');
     } catch (error) {
-      console.error('Logout failed:', error);
+      if (error instanceof Error) {
+        Alert.alert('Error', `Logout failed: ${error.message}`);
+      } else {
+        Alert.alert('Error', 'An unknown error occurred');
+      }
     }
   };
 
