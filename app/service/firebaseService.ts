@@ -14,6 +14,7 @@ import {
 } from 'firebase/firestore';
 import { Todo } from '../screens/types';
 import { getAuth, updatePassword } from 'firebase/auth';
+import { Alert } from 'react-native';
 
 const todosCollection = collection(FIRESTORE_DB, 'todos');
 
@@ -67,13 +68,16 @@ export const changePassword = async (currentPassword: string, newPassword: strin
       // Re-authenticate the user if necessary
       // This may require additional steps, such as using reauthenticateWithCredential
       await updatePassword(user, newPassword);
-      console.log('Password updated successfully');
+      Alert.alert('Password updated successfully');
     } catch (error) {
-      console.error('Error updating password:', error);
-      throw error;
+      if (error instanceof Error) {
+        Alert.alert('Error', `Updating password: ${error.message}`);
+      } else {
+        Alert.alert('Error', 'An unknown error occurred');
+      }
     }
   } else {
-    throw new Error('No user is currently signed in');
+    Alert.alert('Error', 'No user is currently signed in');
   }
 };
 
@@ -84,8 +88,11 @@ export const addCategories = async (userId: string, categories: string[]): Promi
       await addDoc(categoriesCollection, { userId, category });
     }
   } catch (error) {
-    console.error('Error adding categories: ', error);
-    throw error;
+    if (error instanceof Error) {
+      Alert.alert('Error', `Adding categories: ${error.message}`);
+    } else {
+      Alert.alert('Error', 'An unknown error occurred');
+    }
   }
 };
 
@@ -100,8 +107,12 @@ export const fetchCategories = async (userId: string): Promise<string[]> => {
     });
     return categories.sort((a, b) => a.localeCompare(b));
   } catch (error) {
-    console.error('Error fetching categories: ', error);
-    throw error;
+    if (error instanceof Error) {
+      Alert.alert('Error', `Fetching categories: ${error.message}`);
+    } else {
+      Alert.alert('Error', 'An unknown error occurred');
+    }
+    return [];
   }
 };
 
@@ -123,8 +134,11 @@ export const updateCategory = async (userId: string, oldCategory: string, newCat
     
     await Promise.all(updates);
   } catch (error) {
-    console.error('Error updating category: ', error);
-    throw error;
+    if (error instanceof Error) {
+      Alert.alert('Error', `Updating categories: ${error.message}`);
+    } else {
+      Alert.alert('Error', 'An unknown error occurred');
+    }
   }
 };
 
@@ -146,7 +160,10 @@ export const deleteCategory = async (userId: string, categoryToDelete: string): 
     
     await Promise.all(deletePromises);
   } catch (error) {
-    console.error('Error deleting category: ', error);
-    throw error;
+    if (error instanceof Error) {
+      Alert.alert('Error', `Deleting categories: ${error.message}`);
+    } else {
+      Alert.alert('Error', 'An unknown error occurred');
+    }
   }
 };

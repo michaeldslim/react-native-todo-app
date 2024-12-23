@@ -2,7 +2,7 @@
 Copyright (C) 2024 Michael Lim - React Native Todo App - This software is free to use, modify, and share under the terms of the GNU General Public License v3.
 */
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, Dimensions, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, Dimensions, TouchableOpacity, Alert } from 'react-native';
 import { Todo } from './types';
 import { IconButton } from 'react-native-paper';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
@@ -32,7 +32,7 @@ const TodoItem: React.FC<TodoItemProps> = ({
   const [isSwipeOpen, setIsSwipeOpen] = useState(false);
 
   const gesture = Gesture.Pan()
-    .activeOffsetX([-10, 10]) // Only activate gesture when horizontal movement exceeds 10 units
+    .activeOffsetX([-10, 10]) // Only activate gesture when horizontal movement exceeds 10 pixels
     .onChange((event) => {
       // Only allow swipe for completed todos
       if (!todo.completed) {
@@ -105,7 +105,11 @@ const TodoItem: React.FC<TodoItemProps> = ({
         (now.getTime() - createdDate.getTime()) / (1000 * 3600 * 24);
       return daysDifference > 3;
     } catch (error) {
-      console.error('Error checking date', error);
+      if (error instanceof Error) {
+        Alert.alert('Error', `Checking date: ${error.message}`);
+      } else {
+        Alert.alert('Error', 'An unknown error occurred');
+      }
       return false;
     }
   };

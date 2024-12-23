@@ -33,7 +33,6 @@ const Signup: React.FC<TodoListProps> = ({ navigation }) => {
       setError(null);
       navigation.navigate('List');
     } catch (error: any) {
-      console.error(error);
       setError(getAuthErrorMessage(error.code));
     }
   };
