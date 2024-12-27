@@ -13,10 +13,10 @@ import {
   where,
 } from 'firebase/firestore';
 import { Todo } from '../screens/types';
-import { 
-  updatePassword, 
-  EmailAuthProvider, 
-  reauthenticateWithCredential 
+import {
+  updatePassword,
+  EmailAuthProvider,
+  reauthenticateWithCredential,
 } from 'firebase/auth';
 import { FIREBASE_AUTH } from '../../firebaseConfig';
 import { getAuthErrorMessage } from './firebaseErrors';
@@ -27,10 +27,7 @@ const todosCollection = collection(FIRESTORE_DB, 'todos');
 export const fetchTodos = async (userId: string): Promise<Todo[]> => {
   try {
     const todosRef = collection(FIRESTORE_DB, 'todos');
-    const q = query(
-      todosRef,
-      where('userId', '==', userId)
-    );
+    const q = query(todosRef, where('userId', '==', userId));
     const querySnapshot = await getDocs(q);
     const todos = querySnapshot.docs.map((doc) => ({
       id: doc.id,
@@ -38,8 +35,9 @@ export const fetchTodos = async (userId: string): Promise<Todo[]> => {
     })) as Todo[];
 
     // Sort by createdAt in descending order (newest first)
-    return todos.sort((a, b) => 
-      new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    return todos.sort(
+      (a, b) =>
+        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
     );
   } catch (error) {
     console.error('Error fetching todos:', error);
@@ -66,7 +64,10 @@ export const deleteTodo = async (id: string) => {
   await deleteDoc(editDoc);
 };
 
-export const changePassword = async (currentPassword: string, newPassword: string) => {
+export const changePassword = async (
+  currentPassword: string,
+  newPassword: string,
+) => {
   const user = FIREBASE_AUTH.currentUser;
   if (!user?.email) {
     throw new Error('No user is currently signed in');
@@ -76,11 +77,11 @@ export const changePassword = async (currentPassword: string, newPassword: strin
     // First, re-authenticate the user with their current password
     const credential = EmailAuthProvider.credential(
       user.email,
-      currentPassword
+      currentPassword,
     );
-    
+
     await reauthenticateWithCredential(user, credential);
-    
+
     // Then update to the new password
     await updatePassword(user, newPassword);
     return true;
@@ -90,7 +91,10 @@ export const changePassword = async (currentPassword: string, newPassword: strin
   }
 };
 
-export const addCategories = async (userId: string, categories: string[]): Promise<void> => {
+export const addCategories = async (
+  userId: string,
+  categories: string[],
+): Promise<void> => {
   try {
     const categoriesCollection = collection(FIRESTORE_DB, 'categories');
     for (const category of categories) {
@@ -125,22 +129,26 @@ export const fetchCategories = async (userId: string): Promise<string[]> => {
   }
 };
 
-export const updateCategory = async (userId: string, oldCategory: string, newCategory: string): Promise<void> => {
+export const updateCategory = async (
+  userId: string,
+  oldCategory: string,
+  newCategory: string,
+): Promise<void> => {
   try {
     const categoriesCollection = collection(FIRESTORE_DB, 'categories');
     const q = query(
       categoriesCollection,
       where('userId', '==', userId),
-      where('category', '==', oldCategory)
+      where('category', '==', oldCategory),
     );
-    
+
     const querySnapshot = await getDocs(q);
     const updates: Promise<void>[] = [];
-    
+
     querySnapshot.forEach((doc) => {
       updates.push(updateDoc(doc.ref, { category: newCategory }));
     });
-    
+
     await Promise.all(updates);
   } catch (error) {
     if (error instanceof Error) {
@@ -151,22 +159,25 @@ export const updateCategory = async (userId: string, oldCategory: string, newCat
   }
 };
 
-export const deleteCategory = async (userId: string, categoryToDelete: string): Promise<void> => {
+export const deleteCategory = async (
+  userId: string,
+  categoryToDelete: string,
+): Promise<void> => {
   try {
     const categoriesCollection = collection(FIRESTORE_DB, 'categories');
     const q = query(
       categoriesCollection,
       where('userId', '==', userId),
-      where('category', '==', categoryToDelete)
+      where('category', '==', categoryToDelete),
     );
-    
+
     const querySnapshot = await getDocs(q);
     const deletePromises: Promise<void>[] = [];
-    
+
     querySnapshot.forEach((doc) => {
       deletePromises.push(deleteDoc(doc.ref));
     });
-    
+
     await Promise.all(deletePromises);
   } catch (error) {
     if (error instanceof Error) {
