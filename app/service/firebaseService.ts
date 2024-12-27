@@ -13,7 +13,13 @@ import {
   where,
 } from 'firebase/firestore';
 import { Todo } from '../screens/types';
-import { getAuth, updatePassword } from 'firebase/auth';
+import {
+  updatePassword,
+  EmailAuthProvider,
+  reauthenticateWithCredential,
+} from 'firebase/auth';
+import { FIREBASE_AUTH } from '../../firebaseConfig';
+import { getAuthErrorMessage } from './firebaseErrors';
 import { Alert } from 'react-native';
 
 const todosCollection = collection(FIRESTORE_DB, 'todos');
@@ -21,10 +27,7 @@ const todosCollection = collection(FIRESTORE_DB, 'todos');
 export const fetchTodos = async (userId: string): Promise<Todo[]> => {
   try {
     const todosRef = collection(FIRESTORE_DB, 'todos');
-    const q = query(
-      todosRef,
-      where('userId', '==', userId)
-    );
+    const q = query(todosRef, where('userId', '==', userId));
     const querySnapshot = await getDocs(q);
     const todos = querySnapshot.docs.map((doc) => ({
       id: doc.id,
@@ -32,8 +35,9 @@ export const fetchTodos = async (userId: string): Promise<Todo[]> => {
     })) as Todo[];
 
     // Sort by createdAt in descending order (newest first)
-    return todos.sort((a, b) => 
-      new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    return todos.sort(
+      (a, b) =>
+        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
     );
   } catch (error) {
     console.error('Error fetching todos:', error);
@@ -60,28 +64,37 @@ export const deleteTodo = async (id: string) => {
   await deleteDoc(editDoc);
 };
 
-export const changePassword = async (currentPassword: string, newPassword: string) => {
-  const auth = getAuth();
-  const user = auth.currentUser;
-  if (user) {
-    try {
-      // Re-authenticate the user if necessary
-      // This may require additional steps, such as using reauthenticateWithCredential
-      await updatePassword(user, newPassword);
-      Alert.alert('Password updated successfully');
-    } catch (error) {
-      if (error instanceof Error) {
-        Alert.alert('Error', `Updating password: ${error.message}`);
-      } else {
-        Alert.alert('Error', 'An unknown error occurred');
-      }
-    }
-  } else {
-    Alert.alert('Error', 'No user is currently signed in');
+export const changePassword = async (
+  currentPassword: string,
+  newPassword: string,
+) => {
+  const user = FIREBASE_AUTH.currentUser;
+  if (!user?.email) {
+    throw new Error('No user is currently signed in');
+  }
+
+  try {
+    // First, re-authenticate the user with their current password
+    const credential = EmailAuthProvider.credential(
+      user.email,
+      currentPassword,
+    );
+
+    await reauthenticateWithCredential(user, credential);
+
+    // Then update to the new password
+    await updatePassword(user, newPassword);
+    return true;
+  } catch (error: any) {
+    // Use our custom error message handler
+    throw new Error(getAuthErrorMessage(error.code));
   }
 };
 
-export const addCategories = async (userId: string, categories: string[]): Promise<void> => {
+export const addCategories = async (
+  userId: string,
+  categories: string[],
+): Promise<void> => {
   try {
     const categoriesCollection = collection(FIRESTORE_DB, 'categories');
     for (const category of categories) {
@@ -116,22 +129,26 @@ export const fetchCategories = async (userId: string): Promise<string[]> => {
   }
 };
 
-export const updateCategory = async (userId: string, oldCategory: string, newCategory: string): Promise<void> => {
+export const updateCategory = async (
+  userId: string,
+  oldCategory: string,
+  newCategory: string,
+): Promise<void> => {
   try {
     const categoriesCollection = collection(FIRESTORE_DB, 'categories');
     const q = query(
       categoriesCollection,
       where('userId', '==', userId),
-      where('category', '==', oldCategory)
+      where('category', '==', oldCategory),
     );
-    
+
     const querySnapshot = await getDocs(q);
     const updates: Promise<void>[] = [];
-    
+
     querySnapshot.forEach((doc) => {
       updates.push(updateDoc(doc.ref, { category: newCategory }));
     });
-    
+
     await Promise.all(updates);
   } catch (error) {
     if (error instanceof Error) {
@@ -142,22 +159,25 @@ export const updateCategory = async (userId: string, oldCategory: string, newCat
   }
 };
 
-export const deleteCategory = async (userId: string, categoryToDelete: string): Promise<void> => {
+export const deleteCategory = async (
+  userId: string,
+  categoryToDelete: string,
+): Promise<void> => {
   try {
     const categoriesCollection = collection(FIRESTORE_DB, 'categories');
     const q = query(
       categoriesCollection,
       where('userId', '==', userId),
-      where('category', '==', categoryToDelete)
+      where('category', '==', categoryToDelete),
     );
-    
+
     const querySnapshot = await getDocs(q);
     const deletePromises: Promise<void>[] = [];
-    
+
     querySnapshot.forEach((doc) => {
       deletePromises.push(deleteDoc(doc.ref));
     });
-    
+
     await Promise.all(deletePromises);
   } catch (error) {
     if (error instanceof Error) {
