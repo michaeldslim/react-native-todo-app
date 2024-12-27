@@ -13,7 +13,13 @@ import {
   where,
 } from 'firebase/firestore';
 import { Todo } from '../screens/types';
-import { getAuth, updatePassword } from 'firebase/auth';
+import { 
+  updatePassword, 
+  EmailAuthProvider, 
+  reauthenticateWithCredential 
+} from 'firebase/auth';
+import { FIREBASE_AUTH } from '../../firebaseConfig';
+import { getAuthErrorMessage } from './firebaseErrors';
 import { Alert } from 'react-native';
 
 const todosCollection = collection(FIRESTORE_DB, 'todos');
@@ -61,23 +67,26 @@ export const deleteTodo = async (id: string) => {
 };
 
 export const changePassword = async (currentPassword: string, newPassword: string) => {
-  const auth = getAuth();
-  const user = auth.currentUser;
-  if (user) {
-    try {
-      // Re-authenticate the user if necessary
-      // This may require additional steps, such as using reauthenticateWithCredential
-      await updatePassword(user, newPassword);
-      Alert.alert('Password updated successfully');
-    } catch (error) {
-      if (error instanceof Error) {
-        Alert.alert('Error', `Updating password: ${error.message}`);
-      } else {
-        Alert.alert('Error', 'An unknown error occurred');
-      }
-    }
-  } else {
-    Alert.alert('Error', 'No user is currently signed in');
+  const user = FIREBASE_AUTH.currentUser;
+  if (!user?.email) {
+    throw new Error('No user is currently signed in');
+  }
+
+  try {
+    // First, re-authenticate the user with their current password
+    const credential = EmailAuthProvider.credential(
+      user.email,
+      currentPassword
+    );
+    
+    await reauthenticateWithCredential(user, credential);
+    
+    // Then update to the new password
+    await updatePassword(user, newPassword);
+    return true;
+  } catch (error: any) {
+    // Use our custom error message handler
+    throw new Error(getAuthErrorMessage(error.code));
   }
 };
 
