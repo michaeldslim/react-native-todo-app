@@ -164,8 +164,22 @@ export const CategoryManager = () => {
         value={newCategory}
         onChangeText={setNewCategory}
       />
-      <TouchableOpacity style={styles.button} onPress={handleAddCategory}>
-        <Text style={styles.buttonText}>Add Category</Text>
+      <TouchableOpacity
+        style={[
+          styles.button,
+          newCategory.length <= 2 && styles.buttonDisabled,
+        ]}
+        onPress={handleAddCategory}
+        disabled={newCategory.length <= 2}
+      >
+        <Text
+          style={[
+            styles.buttonText,
+            newCategory.length <= 2 && styles.buttonTextDisabled,
+          ]}
+        >
+          Add Category
+        </Text>
       </TouchableOpacity>
 
       <Text style={[styles.subtitle, styles.categoriesTitle]}>
@@ -252,14 +266,22 @@ const styles = StyleSheet.create({
   },
   button: {
     backgroundColor: '#007AFF',
-    padding: 15,
-    borderRadius: 8,
-    alignItems: 'center',
+    padding: 10,
+    borderRadius: 5,
+    marginTop: 10,
+  },
+  buttonDisabled: {
+    backgroundColor: '#cccccc',
   },
   buttonText: {
     color: '#fff',
+    textAlign: 'center',
     fontSize: 16,
     fontWeight: '600',
+  },
+  buttonTextDisabled: {
+    backgroundColor: '#ccc',
+    opacity: 0.7,
   },
   categoriesTitle: {
     marginTop: 30,
