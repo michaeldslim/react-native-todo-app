@@ -11,10 +11,14 @@ import {
   Platform,
   KeyboardAvoidingView,
   Image,
+  Alert,
 } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { FIREBASE_AUTH } from '../../firebaseConfig';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
+import {
+  createUserWithEmailAndPassword,
+  sendEmailVerification,
+} from 'firebase/auth';
 import { RootStackList } from '../navigation/RootNavigator';
 import { getAuthErrorMessage } from '../service/firebaseErrors';
 
@@ -23,15 +27,44 @@ type TodoListProps = NativeStackScreenProps<RootStackList, 'Signup'>;
 const Signup: React.FC<TodoListProps> = ({ navigation }) => {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
+  const [confirmPassword, setConfirmPassword] = useState<string>('');
   const [error, setError] = useState<string | null>(null);
 
   const auth = FIREBASE_AUTH;
 
   const handleSignup = async () => {
     try {
-      await createUserWithEmailAndPassword(auth, email, password);
+      if (password !== confirmPassword) {
+        setError('Passwords do not match');
+        return;
+      }
+
+      if (password.length < 6) {
+        setError('Password must be at least 6 characters');
+        return;
+      }
+
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password,
+      );
+
+      if (userCredential.user) {
+        await sendEmailVerification(userCredential.user);
+        Alert.alert(
+          'Email Verification',
+          'A verification email has been sent. Please check your inbox.',
+          [
+            {
+              text: 'OK',
+              onPress: () => navigation.navigate('Login'),
+            },
+          ],
+        );
+      }
+
       setError(null);
-      navigation.navigate('List');
     } catch (error: any) {
       setError(getAuthErrorMessage(error.code));
     }
@@ -55,24 +88,37 @@ const Signup: React.FC<TodoListProps> = ({ navigation }) => {
           onChangeText={(e) => setEmail(e.trim())}
           autoCapitalize="none"
           keyboardType="email-address"
+          autoComplete="email"
         />
         <TextInput
           style={styles.input}
-          placeholder="Password"
+          placeholder="Password (min. 6 characters)"
           value={password}
           secureTextEntry
           onChangeText={(e) => setPassword(e.trim())}
           autoCapitalize="none"
         />
+        <TextInput
+          style={styles.input}
+          placeholder="Confirm Password"
+          value={confirmPassword}
+          secureTextEntry
+          onChangeText={(e) => setConfirmPassword(e.trim())}
+          autoCapitalize="none"
+        />
         <TouchableOpacity
           style={[
             styles.button,
-            email.trim() === '' ? styles.disabledButton : styles.addButton,
+            !email.trim() || !password.trim() || !confirmPassword.trim()
+              ? styles.disabledButton
+              : styles.addButton,
           ]}
           onPress={handleSignup}
-          disabled={email.trim() === ''}
+          disabled={
+            !email.trim() || !password.trim() || !confirmPassword.trim()
+          }
         >
-          <Text style={styles.buttonText}>Signup</Text>
+          <Text style={styles.buttonText}>Sign Up</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.link}
