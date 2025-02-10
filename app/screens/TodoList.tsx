@@ -23,6 +23,7 @@ import {
   addTodo,
   deleteTodo,
   fetchCategories,
+  addCategories,
 } from '../service/firebaseService';
 import { Todo } from './types';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -72,7 +73,13 @@ const TodoList = ({ navigation }: TodoListProps) => {
       if (userId) {
         try {
           const fetchedCategories = await fetchCategories(userId);
-          setCategories(['Select an option', ...fetchedCategories]);
+          if (!fetchedCategories || fetchedCategories.length === 0) {
+            const initialCategories = ['Home', 'Shopping'];
+            await addCategories(userId, initialCategories);
+            setCategories(['Select an option', ...initialCategories]);
+          } else {
+            setCategories(['Select an option', ...fetchedCategories]);
+          }
         } catch (error) {
           if (error instanceof Error) {
             Alert.alert('Error', `Failed to load categories: ${error.message}`);
@@ -82,7 +89,7 @@ const TodoList = ({ navigation }: TodoListProps) => {
         }
       }
     };
-    loadCategories();
+    loadCategories().then();
   }, [userId, isFocused]);
 
   useEffect(() => {
