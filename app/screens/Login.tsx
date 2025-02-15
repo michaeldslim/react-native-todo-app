@@ -3,7 +3,7 @@
  This software is free to use, modify, and share under 
  the terms of the GNU General Public License v3.
 */
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   TextInput,
@@ -15,7 +15,8 @@ import {
   Image,
 } from 'react-native';
 import { FIREBASE_AUTH } from '../../firebaseConfig';
-import { signInWithEmailAndPassword } from 'firebase/auth';
+import { signInWithEmailAndPassword, onAuthStateChanged } from 'firebase/auth';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackList } from '../navigation/RootNavigator';
 import { getAuthErrorMessage } from '../service/firebaseErrors';
@@ -29,11 +30,21 @@ const Login: React.FC<TodoListProps> = ({ navigation }) => {
 
   const auth = FIREBASE_AUTH;
 
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        await AsyncStorage.setItem('user', JSON.stringify(user));
+        navigation.replace('List');
+      }
+    });
+
+    return () => unsubscribe();
+  }, [auth, navigation]);
+
   const handleLogin = async () => {
     try {
       await signInWithEmailAndPassword(auth, email, password);
       setError(null);
-      navigation.navigate('List');
     } catch (error: any) {
       setError(getAuthErrorMessage(error.code));
     }
