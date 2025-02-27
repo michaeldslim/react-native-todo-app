@@ -4,6 +4,7 @@
  the terms of the GNU General Public License v3.
 */
 import React from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { TouchableOpacity, Text, StyleSheet, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { FIREBASE_AUTH } from '../../firebaseConfig';
@@ -19,6 +20,7 @@ const Logout: React.FC = () => {
   const handleLogout = async () => {
     try {
       await auth.signOut();
+      await AsyncStorage.removeItem('user');
       navigation.navigate('Login');
     } catch (error) {
       if (error instanceof Error) {

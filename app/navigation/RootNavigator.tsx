@@ -7,6 +7,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { NavigationContainer } from '@react-navigation/native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import List from '../screens/TodoList';
+import Loading from '../screens/Loading';
 import Detail from '../screens/TodoDetail';
 import { Todo } from '../screens/types';
 import Login from '../screens/Login';
@@ -16,6 +17,7 @@ import AdminPage from '../screens/AdminPage';
 import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
 
 export type RootStackList = {
+  Loading: undefined;
   List: undefined;
   Detail: { todoItem: Todo };
   Login: undefined;
@@ -40,8 +42,13 @@ const RootNavigator = () => {
           screenOptions={{
             headerBackTitleVisible: false,
           }}
-          initialRouteName="Login"
+          initialRouteName="Loading"
         >
+          <Stack.Screen
+            name="Loading"
+            component={Loading}
+            options={{ headerShown: false }}
+          />
           <Stack.Screen
             name="Login"
             component={Login}
