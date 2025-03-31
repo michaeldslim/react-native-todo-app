@@ -11,8 +11,6 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
       - name: Install Java
         uses: actions/setup-java@v3
@@ -52,15 +50,8 @@ jobs:
         #   KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
         #   KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
         run: |
-          ls -la
-          if [ -d "android" ]; then
-            cd android
-            ./gradlew assembleRelease --info
-          else
-            echo "Android directory not found. Current directory: $(pwd)"
-            ls -la
-            exit 1
-          fi
+          cd android
+          ./gradlew assembleRelease --info
 
       - name: Upload application
         uses: actions/upload-artifact@v4
