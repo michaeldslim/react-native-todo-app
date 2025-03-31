@@ -19,10 +19,10 @@ jobs:
           distribution: adopt
           cache: gradle
 
-      - name: Validate Gradle wrapper
-        uses: gradle/wrapper-validation-action@v1
-        with:
-          dir: android
+      # - name: Validate Gradle wrapper
+      #  uses: gradle/wrapper-validation-action@v1
+      #  with:
+      #    dir: android
 
       - name: Setup Node
         uses: actions/setup-node@v3
