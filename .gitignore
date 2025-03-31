@@ -12,11 +12,14 @@ ios/
 ios/build/
 ios/Pods/
 
-android/
+# Android 빌드 결과물만 무시
+android/.gradle/
 android/build/
-android/app/release
-android/app/bin
-android/app/build
+android/app/release/
+android/app/bin/
+android/app/build/
+android/captures/
+android/local.properties
 
 build/
 .idea/
