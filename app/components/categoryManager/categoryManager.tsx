@@ -3,7 +3,7 @@
  This software is free to use, modify, and share under 
  the terms of the GNU General Public License v3.
 */
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   View,
   Text,
@@ -28,11 +28,7 @@ export const CategoryManager = () => {
   const [editedCategoryText, setEditedCategoryText] = useState<string>('');
   const userId = getAuth().currentUser?.uid;
 
-  useEffect(() => {
-    loadCategories();
-  }, [userId]);
-
-  const loadCategories = async () => {
+  const loadCategories = useCallback(async () => {
     if (userId) {
       try {
         const fetchedCategories = await fetchCategories(userId);
@@ -45,7 +41,11 @@ export const CategoryManager = () => {
         }
       }
     }
-  };
+  }, [userId]);
+
+  useEffect(() => {
+    loadCategories();
+  }, [loadCategories]);
 
   const handleAddCategory = async () => {
     const newCategories = newCategory.split(',').map((cat) => cat.trim());
