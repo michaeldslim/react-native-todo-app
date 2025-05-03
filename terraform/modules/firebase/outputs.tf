@@ -5,22 +5,22 @@
 */
 
 output "firebase_project" {
-  description = "Firebase 프로젝트 리소스"
+  description = "Firebase project resource"
   value       = google_firebase_project.default
 }
 
 output "firebase_web_app" {
-  description = "Firebase 웹 앱 리소스"
+  description = "Firebase web app resource"
   value       = google_firebase_web_app.default
 }
 
 output "firestore_database" {
-  description = "Firestore 데이터베이스 리소스"
+  description = "Firestore database resource"
   value       = google_firestore_database.default
 }
 
 output "firebase_web_app_config" {
-  description = "Firebase 웹 앱 구성"
+  description = "Firebase web app configuration"
   value       = google_firebase_web_app.default.config
   sensitive   = true
 }

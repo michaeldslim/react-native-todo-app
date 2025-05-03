@@ -5,24 +5,24 @@
 */
 
 variable "project_id" {
-  description = "Google Cloud 프로젝트 ID"
+  description = "Google Cloud Project ID"
   type        = string
 }
 
 variable "app_name" {
-  description = "Firebase 앱 이름"
+  description = "Firebase App Name"
   type        = string
   default     = "React Native Todo App"
 }
 
 variable "firestore_location" {
-  description = "Firestore 데이터베이스 위치"
+  description = "Firestore Database Location"
   type        = string
   default     = "us-central"
 }
 
 variable "region" {
-  description = "Google Cloud 리전"
+  description = "Google Cloud Region"
   type        = string
   default     = "us-central1"
 }

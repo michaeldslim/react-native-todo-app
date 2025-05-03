@@ -1,35 +1,35 @@
-# Terraform 파일 구조 및 설명
+# Terraform File Structure and Description
 
-이 문서는 React Native Todo 앱 프로젝트의 Terraform 파일 구조와 각 파일의 역할에 대해 설명합니다.
+This document explains the Terraform file structure and the role of each file in the React Native Todo App project.
 
-## 디렉토리 구조
+## Directory Structure
 
 ```
 terraform/
-├── environments/          # 환경별 구성
-│   ├── dev/               # 개발 환경
-│   └── prod/              # 운영 환경
-├── modules/               # 재사용 가능한 모듈
-│   └── firebase/          # Firebase 리소스 관리 모듈
-└── README.md              # 설명 문서
+├── environments/          # Environment-specific configurations
+│   ├── dev/               # Development environment
+│   └── prod/              # Production environment
+├── modules/               # Reusable modules
+│   └── firebase/          # Firebase resource management module
+└── README.md              # Documentation
 ```
 
-## 주요 파일 설명
+## Key File Descriptions
 
-### 모듈 파일 (`terraform/modules/firebase/`)
+### Module Files (`terraform/modules/firebase/`)
 
 #### main.tf
 
-Firebase 인프라를 정의하는 핵심 파일입니다.
+This is the core file that defines the Firebase infrastructure.
 
 ```hcl
-# Firebase 프로젝트 리소스
+# Firebase project resource
 resource "google_firebase_project" "default" {
   provider = google-beta
   project  = var.project_id
 }
 
-# Firebase 웹 앱 리소스
+# Firebase web app resource
 resource "google_firebase_web_app" "default" {
   provider     = google-beta
   project      = var.project_id
@@ -37,7 +37,7 @@ resource "google_firebase_web_app" "default" {
   depends_on   = [google_firebase_project.default]
 }
 
-# Firestore 데이터베이스 리소스
+# Firestore database resource
 resource "google_firestore_database" "default" {
   provider                    = google-beta
   project                     = var.project_id
