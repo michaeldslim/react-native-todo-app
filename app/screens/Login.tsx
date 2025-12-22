@@ -157,6 +157,7 @@ const styles = StyleSheet.create({
   linkText: {
     color: '#1976d2',
     fontSize: 16,
+    textAlign: 'center',
   },
   logoContainer: {
     alignItems: 'center',
@@ -169,10 +170,12 @@ const styles = StyleSheet.create({
   },
   developerText: {
     position: 'absolute',
-    right: 20,
+    left: 0,
+    right: 0,
     bottom: 20,
     fontSize: 12,
     color: '#aaa',
+    textAlign: 'center',
   },
 });
 

@@ -187,11 +187,13 @@ const styles = StyleSheet.create({
   },
   link: {
     marginTop: 12,
+    marginBottom: 40,
     alignItems: 'center',
   },
   linkText: {
     color: '#1976d2',
     fontSize: 16,
+    textAlign: 'center',
   },
   logoContainer: {
     alignItems: 'center',
@@ -204,10 +206,12 @@ const styles = StyleSheet.create({
   },
   developerText: {
     position: 'absolute',
-    right: 20,
+    left: 0,
+    right: 0,
     bottom: 20,
     fontSize: 12,
     color: '#aaa',
+    textAlign: 'center',
   },
 });
 
