@@ -76,7 +76,8 @@ export const PasswordManager = () => {
 
 const styles = StyleSheet.create({
   section: {
-    padding: 20,
+    paddingVertical: 20,
+    paddingHorizontal: 10,
     backgroundColor: '#fff',
     borderRadius: 10,
     marginBottom: 20,

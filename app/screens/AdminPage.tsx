@@ -21,8 +21,11 @@ const AdminPage = () => {
       style={styles.keyboardAvoidingView}
       keyboardVerticalOffset={Platform.OS === 'ios' ? 90 : 0}
     >
-      <SafeAreaView style={styles.container}>
-        <ScrollView style={styles.scrollView}>
+      <SafeAreaView style={styles.safeArea}>
+        <ScrollView
+          style={styles.scrollView}
+          contentContainerStyle={styles.contentContainer}
+        >
           <PasswordManager />
           <CategoryManager />
         </ScrollView>
@@ -36,12 +39,16 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
   },
-  container: {
+  safeArea: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#fff',
   },
   scrollView: {
-    padding: 20,
+    flex: 1,
+  },
+  contentContainer: {
+    marginHorizontal: 0,
+    paddingVertical: 10,
   },
 });
 
