@@ -99,7 +99,28 @@ export const addCategories = async (
 ): Promise<void> => {
   try {
     const categoriesCollection = collection(FIRESTORE_DB, 'categories');
-    for (const category of categories) {
+
+    // Load existing categories for this user to prevent duplicates
+    const existingQuery = query(
+      categoriesCollection,
+      where('userId', '==', userId),
+    );
+    const existingSnapshot = await getDocs(existingQuery);
+
+    const existingCategories = new Set<string>();
+    existingSnapshot.forEach((doc) => {
+      existingCategories.add(String(doc.data().category));
+    });
+
+    const newCategories = categories.filter(
+      (category) => !existingCategories.has(category),
+    );
+
+    if (newCategories.length === 0) {
+      return;
+    }
+
+    for (const category of newCategories) {
       await addDoc(categoriesCollection, { userId, category });
     }
   } catch (error) {
@@ -120,7 +141,11 @@ export const fetchCategories = async (userId: string): Promise<string[]> => {
     querySnapshot.forEach((doc) => {
       categories.push(doc.data().category);
     });
-    return categories.sort((a, b) => a.localeCompare(b));
+
+    // Ensure categories are unique before returning
+    const uniqueCategories = Array.from(new Set(categories));
+
+    return uniqueCategories.sort((a, b) => a.localeCompare(b));
   } catch (error) {
     if (error instanceof Error) {
       Alert.alert('Error', `Fetching categories: ${error.message}`);
