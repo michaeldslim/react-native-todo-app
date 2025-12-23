@@ -1,15 +1,15 @@
-# React-native TO-DO App
+# Carrot Note App
 
-This React Native app uses Firebase for storing and managing the to-do list. It allows users to add, read, update, and delete to-dos from a Firestore database.
+This React Native app uses Firebase for storing and managing the note list. It allows users to add, read, update, and delete notes from a Firestore database.
 
 ### CRUD Operations
-1. Create: Ability to add new items to the to-do list.
-2. Read: Fetch and display the list of to-dos from Firebase in real-time.
-3. Update: Toggle the completion status of a to-do item.
-4. Delete: Remove a to-do item from the list.
+1. Create: Ability to add new items to the note list.
+2. Read: Fetch and display the list of notes from Firebase in real-time.
+3. Update: Toggle the completion status of a note item.
+4. Delete: Remove a note item from the list.
 
 ### Firebase Firestore
-- Use Firestore as the backend to store and manage the to-do items.
+- Use Firestore as the backend to store and manage the note items.
 
 ### Real-time Updates
 - The app should reflect real-time changes, such as when an item is added, updated, or deleted.
@@ -68,10 +68,10 @@ defaultConfig.resolver.sourceExts.push('cjs');
 module.exports = defaultConfig;
 ```
 
-### To-Do List Component
-- Define a component (TodoList.tsx) that will handle displaying the list of to-dos.
-- Manage the state of to-do items and input for new to-dos.
-- Use Firestore to fetch, add, update, and delete to-do items.
+### Note List Component
+- Define a component (TodoList.tsx) that will handle displaying the list of notes.
+- Manage the state of note items and input for new notes.
+- Use Firestore to fetch, add, update, and delete note items.
 - Render the list of items with options to toggle their completion status and delete them.
 
 ### Run the Application
