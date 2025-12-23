@@ -192,12 +192,12 @@ const NoteList = ({ navigation }: NoteListProps) => {
               <TouchableOpacity
                 style={[
                   styles.button,
-                  todo.trim().length < 2
+                  todo.trim().length < 3
                     ? styles.disabledButton
                     : styles.addButton,
                 ]}
-                disabled={todo.trim().length < 2}
-                onPress={todo.trim().length > 2 ? handleAddTodo : () => {}}
+                disabled={todo.trim().length < 3}
+                onPress={todo.trim().length >= 3 ? handleAddTodo : () => {}}
               >
                 <Text style={styles.addButtonText}>Add carrot note</Text>
               </TouchableOpacity>
