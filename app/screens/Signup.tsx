@@ -15,6 +15,7 @@ import {
   Image,
   Alert,
 } from 'react-native';
+import { IconButton } from 'react-native-paper';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { FIREBASE_AUTH } from '../../firebaseConfig';
 import {
@@ -31,18 +32,108 @@ const Signup: React.FC<TodoListProps> = ({ navigation }) => {
   const [password, setPassword] = useState<string>('');
   const [confirmPassword, setConfirmPassword] = useState<string>('');
   const [error, setError] = useState<string | null>(null);
+  const [passwordsMatch, setPasswordsMatch] = useState<boolean | null>(null);
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState<boolean>(false);
 
   const auth = FIREBASE_AUTH;
+  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const passwordPattern = /^(?=.*[A-Z])(?=.*\d)(?=.*[@#$%&]).{8,}$/;
+
+  const handleEmailChange = (value: string) => {
+    const trimmed = value.trim();
+    setEmail(trimmed);
+
+    const emailErrorMessage = 'Please enter a valid email address.';
+
+    if (trimmed && !emailPattern.test(trimmed)) {
+      setError(emailErrorMessage);
+      return;
+    }
+
+    if (error === emailErrorMessage) {
+      setError(null);
+    }
+  };
+
+  const handlePasswordChange = (value: string) => {
+    const trimmed = value.trim();
+    setPassword(trimmed);
+
+    // First, if confirm password exists and does not match, prefer the mismatch error
+    if (confirmPassword && trimmed !== confirmPassword) {
+      setError('Passwords do not match');
+      setPasswordsMatch(false);
+      return;
+    }
+
+    // If password is present but does not satisfy strength rules, show the strength error
+    if (trimmed && !passwordPattern.test(trimmed)) {
+      setError(
+        'Password must be at least 8 characters and include 1 uppercase letter, 1 number, and 1 special character (@, #, $, %, &).',
+      );
+      setPasswordsMatch(null);
+      return;
+    }
+
+    // At this point, no mismatch and strength is OK (or password is empty)
+    if (
+      error === 'Passwords do not match' ||
+      error ===
+        'Password must be at least 8 characters and include 1 uppercase letter, 1 number, and 1 special character (@, #, $, %, &).'
+    ) {
+      setError(null);
+    }
+
+    if (confirmPassword && trimmed === confirmPassword) {
+      setPasswordsMatch(true);
+    } else if (!trimmed && !confirmPassword) {
+      setPasswordsMatch(null);
+    } else {
+      setPasswordsMatch(null);
+    }
+  };
+
+  const handleConfirmPasswordChange = (value: string) => {
+    const trimmed = value.trim();
+    setConfirmPassword(trimmed);
+
+    if (trimmed) {
+      if (trimmed !== password) {
+        setError('Passwords do not match');
+        setPasswordsMatch(false);
+      } else {
+        if (error === 'Passwords do not match') {
+          setError(null);
+        }
+        setPasswordsMatch(true);
+      }
+    } else {
+      if (error === 'Passwords do not match') {
+        setError(null);
+      }
+      setPasswordsMatch(null);
+    }
+  };
 
   const handleSignup = async () => {
     try {
+      const emailErrorMessage = 'Please enter a valid email address.';
+
+      if (!emailPattern.test(email)) {
+        setError(emailErrorMessage);
+        return;
+      }
+
       if (password !== confirmPassword) {
         setError('Passwords do not match');
         return;
       }
 
-      if (password.length < 6) {
-        setError('Password must be at least 6 characters');
+      if (!passwordPattern.test(password)) {
+        setError(
+          'Password must be at least 8 characters and include 1 uppercase letter, 1 number, and 1 special character (@, #, $, %, &).',
+        );
         return;
       }
 
@@ -82,32 +173,68 @@ const Signup: React.FC<TodoListProps> = ({ navigation }) => {
           <Image source={require('../assets/logo.png')} style={styles.logo} />
         </View>
         <Text style={styles.title}>Signup</Text>
-        {error && <Text style={styles.errorText}>{error}</Text>}
+        {error &&
+          (error.startsWith(
+            'Password must be at least 8 characters and include 1 uppercase letter, 1 number, and 1 special character',
+          ) ? (
+            <View style={styles.passwordRuleContainer}>
+              <Text style={styles.passwordRuleTitleText}>Password must:</Text>
+              <Text style={styles.passwordRuleItemText}>
+                • Be at least 8 characters
+              </Text>
+              <Text style={styles.passwordRuleItemText}>
+                • Include 1 uppercase letter
+              </Text>
+              <Text style={styles.passwordRuleItemText}>• Include 1 number</Text>
+              <Text style={styles.passwordRuleItemText}>
+                • Include 1 special character (@, #, $, %, &)
+              </Text>
+            </View>
+          ) : (
+            <Text style={styles.errorText}>{error}</Text>
+          ))}
+        {!error && passwordsMatch && (
+          <Text style={styles.passwordMatchText}>Passwords matched</Text>
+        )}
         <TextInput
           style={styles.input}
           placeholder="Email"
           value={email}
-          onChangeText={(e) => setEmail(e.trim())}
+          onChangeText={handleEmailChange}
           autoCapitalize="none"
           keyboardType="email-address"
           autoComplete="email"
         />
-        <TextInput
-          style={styles.input}
-          placeholder="Password (min. 6 characters)"
-          value={password}
-          secureTextEntry
-          onChangeText={(e) => setPassword(e.trim())}
-          autoCapitalize="none"
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="Confirm Password"
-          value={confirmPassword}
-          secureTextEntry
-          onChangeText={(e) => setConfirmPassword(e.trim())}
-          autoCapitalize="none"
-        />
+        <View style={styles.passwordInputContainer}>
+          <TextInput
+            style={styles.passwordInput}
+            placeholder="Password"
+            value={password}
+            secureTextEntry={!showPassword}
+            onChangeText={handlePasswordChange}
+            autoCapitalize="none"
+          />
+          <IconButton
+            icon={showPassword ? 'eye-off' : 'eye'}
+            size={20}
+            onPress={() => setShowPassword((prev) => !prev)}
+          />
+        </View>
+        <View style={styles.passwordInputContainer}>
+          <TextInput
+            style={styles.passwordInput}
+            placeholder="Confirm Password"
+            value={confirmPassword}
+            secureTextEntry={!showConfirmPassword}
+            onChangeText={handleConfirmPasswordChange}
+            autoCapitalize="none"
+          />
+          <IconButton
+            icon={showConfirmPassword ? 'eye-off' : 'eye'}
+            size={20}
+            onPress={() => setShowConfirmPassword((prev) => !prev)}
+          />
+        </View>
         <TouchableOpacity
           style={[
             styles.button,
@@ -159,6 +286,22 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginBottom: 10,
   },
+  passwordRuleContainer: {
+    marginHorizontal: 10,
+    marginBottom: 10,
+  },
+  passwordRuleTitleText: {
+    color: 'green',
+    fontSize: 14,
+    textAlign: 'left',
+    marginBottom: 2,
+  },
+  passwordRuleItemText: {
+    color: 'green',
+    fontSize: 12,
+    textAlign: 'left',
+    marginBottom: 0,
+  },
   input: {
     height: 50,
     borderColor: '#cccccc',
@@ -167,6 +310,26 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     marginBottom: 16,
     backgroundColor: '#ffffff',
+  },
+  passwordInputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderColor: '#cccccc',
+    borderWidth: 1,
+    borderRadius: 8,
+    backgroundColor: '#ffffff',
+    marginBottom: 16,
+  },
+  passwordInput: {
+    flex: 1,
+    height: 50,
+    paddingHorizontal: 16,
+  },
+  passwordMatchText: {
+    color: 'green',
+    fontSize: 14,
+    marginBottom: 8,
+    textAlign: 'center',
   },
   disabledButton: {
     backgroundColor: '#d8d8d8',
