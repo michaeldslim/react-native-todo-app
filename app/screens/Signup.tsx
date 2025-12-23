@@ -142,8 +142,9 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    justifyContent: 'center',
-    paddingHorizontal: 32,
+    justifyContent: 'flex-start',
+    paddingTop: 80,
+    paddingHorizontal: 10,
     backgroundColor: '#f7f7f7',
   },
   title: {

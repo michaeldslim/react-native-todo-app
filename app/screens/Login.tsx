@@ -61,6 +61,7 @@ const Login: React.FC<TodoListProps> = ({ navigation }) => {
         </View>
         <Text style={styles.title}>Login</Text>
         {error && <Text style={styles.errorText}>{error}</Text>}
+        <View style={styles.inputSpacer} />
         <TextInput
           style={styles.input}
           placeholder="Email"
@@ -107,8 +108,9 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    justifyContent: 'center',
-    paddingHorizontal: 32,
+    justifyContent: 'flex-start',
+    paddingTop: 80,
+    paddingHorizontal: 10,
     backgroundColor: '#f7f7f7',
   },
   title: {
@@ -131,6 +133,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     marginBottom: 16,
     backgroundColor: '#ffffff',
+  },
+  inputSpacer: {
+    height: 50,
+    marginBottom: 16,
   },
   disabledButton: {
     backgroundColor: '#d8d8d8',
