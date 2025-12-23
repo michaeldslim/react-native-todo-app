@@ -11,7 +11,6 @@ import {
   ScrollView,
   StyleSheet,
 } from 'react-native';
-import { PasswordManager } from '../components/passwordManager';
 import { CategoryManager } from '../components/categoryManager';
 
 const AdminPage = () => {
@@ -26,7 +25,6 @@ const AdminPage = () => {
           style={styles.scrollView}
           contentContainerStyle={styles.contentContainer}
         >
-          <PasswordManager />
           <CategoryManager />
         </ScrollView>
       </SafeAreaView>
