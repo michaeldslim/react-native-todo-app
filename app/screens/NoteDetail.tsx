@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2025 Michael Lim - React Native Todo App 
+ Copyright (C) 2025 Michael Lim - Carrot Note App 
  This software is free to use, modify, and share under 
  the terms of the GNU General Public License v3.
 */
@@ -20,8 +20,8 @@ import {
 } from '../service/firebaseService';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackList } from '../navigation/RootNavigator';
-import { TodoUpdateButton } from '../components/todoUpdateButton';
-import { TodoActionButton } from '../components/todoActionButton';
+import { NoteUpdateButton } from '../components/noteUpdateButton';
+import { NoteActionButton } from '../components/noteActionButton';
 
 type TodoDetailProps = NativeStackScreenProps<RootStackList, 'Detail'>;
 
@@ -77,19 +77,19 @@ const TodoDetail = ({ route, navigation }: TodoDetailProps) => {
           multiline={true}
         />
         <View style={styles.buttonContainer}>
-          <TodoUpdateButton
+          <NoteUpdateButton
             disabled={isDisabled}
             styles={styles}
             onPress={!isDisabled ? handleUpdateTodo : undefined}
             text="Update note"
           />
-          <TodoActionButton
+          <NoteActionButton
             styles={[...commonButtonStyles, styles.deleteButton]}
             onPress={confirmDelete}
             text="Delete note"
             textStyles={[styles.buttonText]}
           />
-          <TodoActionButton
+          <NoteActionButton
             styles={[...commonButtonStyles, styles.toggleButton]}
             onPress={handleToggleStatus}
             text={getStatusText(todoItem.completed)}

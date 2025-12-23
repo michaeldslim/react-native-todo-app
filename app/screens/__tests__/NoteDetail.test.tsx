@@ -1,11 +1,11 @@
 /*
- Copyright (C) 2025 Michael Lim - React Native Todo App 
+ Copyright (C) 2025 Michael Lim - Carrot Note App 
  This software is free to use, modify, and share under 
  the terms of the GNU General Public License v3.
 */
 import React from 'react';
 import { render, fireEvent, waitFor } from '@testing-library/react-native';
-import TodoDetail from '../TodoDetail';
+import TodoDetail from '../NoteDetail';
 import * as firebaseService from '../../service/firebaseService';
 
 jest.mock('../../service/firebaseService', () => ({

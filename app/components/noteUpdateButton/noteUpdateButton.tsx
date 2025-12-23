@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2025 Michael Lim - React Native Todo App 
+ Copyright (C) 2025 Michael Lim - Carrot Note App 
  This software is free to use, modify, and share under 
  the terms of the GNU General Public License v3.
 */
@@ -13,14 +13,14 @@ interface ButtonStyles {
   buttonText: TextStyle;
 }
 
-interface TodoUpdateButtonProps {
+interface NoteUpdateButtonProps {
   disabled?: boolean;
   onPress?: () => void;
   styles: ButtonStyles;
   text: string;
 }
 
-export const TodoUpdateButton: React.FC<TodoUpdateButtonProps> = ({
+export const NoteUpdateButton: React.FC<NoteUpdateButtonProps> = ({
   disabled,
   onPress,
   styles,
