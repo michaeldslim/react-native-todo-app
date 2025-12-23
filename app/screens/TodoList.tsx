@@ -138,7 +138,7 @@ const TodoList = ({ navigation }: TodoListProps) => {
       const todos = await fetchTodos(userId);
       setTodos(todos);
     } catch (error) {
-      console.error('Error refreshing todos:', error);
+      console.error('Error refreshing notes:', error);
     } finally {
       setRefreshing(false);
     }
@@ -181,7 +181,7 @@ const TodoList = ({ navigation }: TodoListProps) => {
                   ? styles.activeInput
                   : styles.inActiveInput
               }
-              placeholder={'Add new todo'}
+              placeholder={'Add new carrot note'}
               onChangeText={(text: string) => setTodo(text.trimStart())}
               value={todo}
               maxLength={200}
@@ -199,7 +199,7 @@ const TodoList = ({ navigation }: TodoListProps) => {
                 disabled={todo.trim().length < 2}
                 onPress={todo.trim().length > 2 ? handleAddTodo : () => {}}
               >
-                <Text style={styles.addButtonText}>Add Todo</Text>
+                <Text style={styles.addButtonText}>Add carrot note</Text>
               </TouchableOpacity>
             </View>
             <View style={styles.filterContainer}>

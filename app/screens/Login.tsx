@@ -13,8 +13,10 @@ import {
   Platform,
   KeyboardAvoidingView,
   Image,
+  ScrollView,
 } from 'react-native';
 import { FIREBASE_AUTH } from '../../firebaseConfig';
+import { IconButton } from 'react-native-paper';
 import { signInWithEmailAndPassword, onAuthStateChanged } from 'firebase/auth';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -26,6 +28,7 @@ type TodoListProps = NativeStackScreenProps<RootStackList, 'Login'>;
 const Login: React.FC<TodoListProps> = ({ navigation }) => {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
+  const [showPassword, setShowPassword] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
   const auth = FIREBASE_AUTH;
@@ -52,52 +55,60 @@ const Login: React.FC<TodoListProps> = ({ navigation }) => {
 
   return (
     <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
       style={styles.keyboardAvoidingView}
     >
-      <View style={styles.container}>
-        <View style={styles.logoContainer}>
-          <Image source={require('../assets/logo.png')} style={styles.logo} />
+      <ScrollView
+        contentContainerStyle={styles.scrollViewContent}
+        keyboardShouldPersistTaps="handled"
+      >
+        <View style={styles.container}>
+          <View style={styles.logoContainer}>
+            <Image source={require('../assets/logo.png')} style={styles.logo} />
+          </View>
+          {error && <Text style={styles.errorText}>{error}</Text>}
+          <View style={styles.inputSpacer} />
+          <TextInput
+            style={styles.input}
+            placeholder="Email"
+            value={email}
+            onChangeText={(e) => setEmail(e.trim())}
+            autoCapitalize="none"
+            keyboardType="email-address"
+          />
+          <View style={styles.passwordInputContainer}>
+            <TextInput
+              style={styles.passwordInput}
+              placeholder="Password"
+              value={password}
+              secureTextEntry={!showPassword}
+              onChangeText={(e) => setPassword(e.trim())}
+              autoCapitalize="none"
+            />
+            <IconButton
+              icon={showPassword ? 'eye-off' : 'eye'}
+              size={20}
+              onPress={() => setShowPassword((prev) => !prev)}
+            />
+          </View>
+          <TouchableOpacity
+            style={[
+              styles.button,
+              email.trim() === '' ? styles.disabledButton : styles.addButton,
+            ]}
+            onPress={handleLogin}
+            disabled={email.trim() === ''}
+          >
+            <Text style={styles.buttonText}>Login</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.link}
+            onPress={() => navigation.navigate('Signup')}
+          >
+            <Text style={styles.linkText}>Don't have an account? Signup</Text>
+          </TouchableOpacity>
         </View>
-        <Text style={styles.title}>Login</Text>
-        {error && <Text style={styles.errorText}>{error}</Text>}
-        <View style={styles.inputSpacer} />
-        <TextInput
-          style={styles.input}
-          placeholder="Email"
-          value={email}
-          onChangeText={(e) => setEmail(e.trim())}
-          autoCapitalize="none"
-          keyboardType="email-address"
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="Password"
-          value={password}
-          secureTextEntry
-          onChangeText={(e) => setPassword(e.trim())}
-          autoCapitalize="none"
-        />
-        <TouchableOpacity
-          style={[
-            styles.button,
-            email.trim() === '' ? styles.disabledButton : styles.addButton,
-          ]}
-          onPress={handleLogin}
-          disabled={email.trim() === ''}
-        >
-          <Text style={styles.buttonText}>Login</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.link}
-          onPress={() => navigation.navigate('Signup')}
-        >
-          <Text style={styles.linkText}>Don't have an account? Signup</Text>
-        </TouchableOpacity>
-        <Text style={styles.developerText}>
-          Developed by Mike, powered by React Native
-        </Text>
-      </View>
+      </ScrollView>
     </KeyboardAvoidingView>
   );
 };
@@ -105,6 +116,9 @@ const Login: React.FC<TodoListProps> = ({ navigation }) => {
 const styles = StyleSheet.create({
   keyboardAvoidingView: {
     flex: 1,
+  },
+  scrollViewContent: {
+    flexGrow: 1,
   },
   container: {
     flex: 1,
@@ -133,6 +147,20 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     marginBottom: 16,
     backgroundColor: '#ffffff',
+  },
+  passwordInputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderColor: '#cccccc',
+    borderWidth: 1,
+    borderRadius: 8,
+    backgroundColor: '#ffffff',
+    marginBottom: 16,
+  },
+  passwordInput: {
+    flex: 1,
+    height: 50,
+    paddingHorizontal: 16,
   },
   inputSpacer: {
     height: 50,
@@ -173,15 +201,6 @@ const styles = StyleSheet.create({
     width: 100,
     height: 100,
     marginBottom: 30,
-  },
-  developerText: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    bottom: 20,
-    fontSize: 12,
-    color: '#aaa',
-    textAlign: 'center',
   },
 });
 

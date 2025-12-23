@@ -14,6 +14,7 @@ import {
   KeyboardAvoidingView,
   Image,
   Alert,
+  ScrollView,
 } from 'react-native';
 import { IconButton } from 'react-native-paper';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -165,100 +166,101 @@ const Signup: React.FC<TodoListProps> = ({ navigation }) => {
 
   return (
     <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
       style={styles.keyboardAvoidingView}
     >
-      <View style={styles.container}>
-        <View style={styles.logoContainer}>
-          <Image source={require('../assets/logo.png')} style={styles.logo} />
-        </View>
-        <Text style={styles.title}>Signup</Text>
-        {error &&
-          (error.startsWith(
-            'Password must be at least 8 characters and include 1 uppercase letter, 1 number, and 1 special character',
-          ) ? (
-            <View style={styles.passwordRuleContainer}>
-              <Text style={styles.passwordRuleTitleText}>Password must:</Text>
-              <Text style={styles.passwordRuleItemText}>
-                • Be at least 8 characters
-              </Text>
-              <Text style={styles.passwordRuleItemText}>
-                • Include 1 uppercase letter
-              </Text>
-              <Text style={styles.passwordRuleItemText}>• Include 1 number</Text>
-              <Text style={styles.passwordRuleItemText}>
-                • Include 1 special character (@, #, $, %, &)
-              </Text>
-            </View>
-          ) : (
-            <Text style={styles.errorText}>{error}</Text>
-          ))}
-        {!error && passwordsMatch && (
-          <Text style={styles.passwordMatchText}>Passwords matched</Text>
-        )}
-        <TextInput
-          style={styles.input}
-          placeholder="Email"
-          value={email}
-          onChangeText={handleEmailChange}
-          autoCapitalize="none"
-          keyboardType="email-address"
-          autoComplete="email"
-        />
-        <View style={styles.passwordInputContainer}>
+      <ScrollView
+        contentContainerStyle={styles.scrollViewContent}
+        keyboardShouldPersistTaps="handled"
+      >
+        <View style={styles.container}>
+          <View style={styles.logoContainer}>
+            <Image source={require('../assets/logo.png')} style={styles.logo} />
+          </View>
+          {error &&
+            (error.startsWith(
+              'Password must be at least 8 characters and include 1 uppercase letter, 1 number, and 1 special character',
+            ) ? (
+              <View style={styles.passwordRuleContainer}>
+                <Text style={styles.passwordRuleTitleText}>Password must:</Text>
+                <Text style={styles.passwordRuleItemText}>
+                  • Be at least 8 characters
+                </Text>
+                <Text style={styles.passwordRuleItemText}>
+                  • Include 1 uppercase letter
+                </Text>
+                <Text style={styles.passwordRuleItemText}>• Include 1 number</Text>
+                <Text style={styles.passwordRuleItemText}>
+                  • Include 1 special character (@, #, $, %, &)
+                </Text>
+              </View>
+            ) : (
+              <Text style={styles.errorText}>{error}</Text>
+            ))}
+          {!error && passwordsMatch && (
+            <Text style={styles.passwordMatchText}>Passwords matched</Text>
+          )}
           <TextInput
-            style={styles.passwordInput}
-            placeholder="Password"
-            value={password}
-            secureTextEntry={!showPassword}
-            onChangeText={handlePasswordChange}
+            style={styles.input}
+            placeholder="Email"
+            value={email}
+            onChangeText={handleEmailChange}
             autoCapitalize="none"
+            keyboardType="email-address"
+            autoComplete="email"
           />
-          <IconButton
-            icon={showPassword ? 'eye-off' : 'eye'}
-            size={20}
-            onPress={() => setShowPassword((prev) => !prev)}
-          />
+          <View style={styles.passwordInputContainer}>
+            <TextInput
+              style={styles.passwordInput}
+              placeholder="Password"
+              value={password}
+              secureTextEntry={!showPassword}
+              onChangeText={handlePasswordChange}
+              autoCapitalize="none"
+            />
+            <IconButton
+              icon={showPassword ? 'eye-off' : 'eye'}
+              size={20}
+              onPress={() => setShowPassword((prev) => !prev)}
+            />
+          </View>
+          <View style={styles.passwordInputContainer}>
+            <TextInput
+              style={styles.passwordInput}
+              placeholder="Confirm Password"
+              value={confirmPassword}
+              secureTextEntry={!showConfirmPassword}
+              onChangeText={handleConfirmPasswordChange}
+              autoCapitalize="none"
+            />
+            <IconButton
+              icon={showConfirmPassword ? 'eye-off' : 'eye'}
+              size={20}
+              onPress={() => setShowConfirmPassword((prev) => !prev)}
+            />
+          </View>
+          <TouchableOpacity
+            style={[
+              styles.button,
+              !email.trim() || !password.trim() || !confirmPassword.trim()
+                ? styles.disabledButton
+                : styles.addButton,
+            ]}
+            onPress={handleSignup}
+            disabled={
+              !email.trim() || !password.trim() || !confirmPassword.trim()
+            }
+          >
+            <Text style={styles.buttonText}>Sign Up</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.link}
+            onPress={() => navigation.navigate('Login')}
+          >
+            <Text style={styles.linkText}>Already have an account? Login</Text>
+          </TouchableOpacity>
         </View>
-        <View style={styles.passwordInputContainer}>
-          <TextInput
-            style={styles.passwordInput}
-            placeholder="Confirm Password"
-            value={confirmPassword}
-            secureTextEntry={!showConfirmPassword}
-            onChangeText={handleConfirmPasswordChange}
-            autoCapitalize="none"
-          />
-          <IconButton
-            icon={showConfirmPassword ? 'eye-off' : 'eye'}
-            size={20}
-            onPress={() => setShowConfirmPassword((prev) => !prev)}
-          />
-        </View>
-        <TouchableOpacity
-          style={[
-            styles.button,
-            !email.trim() || !password.trim() || !confirmPassword.trim()
-              ? styles.disabledButton
-              : styles.addButton,
-          ]}
-          onPress={handleSignup}
-          disabled={
-            !email.trim() || !password.trim() || !confirmPassword.trim()
-          }
-        >
-          <Text style={styles.buttonText}>Sign Up</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.link}
-          onPress={() => navigation.navigate('Login')}
-        >
-          <Text style={styles.linkText}>Already have an account? Login</Text>
-        </TouchableOpacity>
-        <Text style={styles.developerText}>
-          Developed by Mike, powered by React Native
-        </Text>
-      </View>
+      </ScrollView>
     </KeyboardAvoidingView>
   );
 };
@@ -266,6 +268,9 @@ const Signup: React.FC<TodoListProps> = ({ navigation }) => {
 const styles = StyleSheet.create({
   keyboardAvoidingView: {
     flex: 1,
+  },
+  scrollViewContent: {
+    flexGrow: 1,
   },
   container: {
     flex: 1,
@@ -367,15 +372,6 @@ const styles = StyleSheet.create({
     width: 100,
     height: 100,
     marginBottom: 30,
-  },
-  developerText: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    bottom: 20,
-    fontSize: 12,
-    color: '#aaa',
-    textAlign: 'center',
   },
 });
 

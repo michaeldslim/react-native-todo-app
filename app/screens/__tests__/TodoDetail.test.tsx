@@ -38,24 +38,24 @@ describe('TodoDetail screen', () => {
       <TodoDetail {...props} />,
     );
 
-    expect(getByPlaceholderText('Edit Todo Title')).toBeTruthy();
-    expect(getByText('Update Todo')).toBeTruthy();
-    expect(getByText('Delete Todo')).toBeTruthy();
+    expect(getByPlaceholderText('Edit Carrot note Title')).toBeTruthy();
+    expect(getByText('Update Carrot note')).toBeTruthy();
+    expect(getByText('Delete Carrot note')).toBeTruthy();
     expect(getByText('Mark as Complete')).toBeTruthy();
   });
 
-  it('calls updateTodo and navigates back when Update Todo is pressed', async () => {
+  it('calls updateTodo and navigates back when Update Carrot note is pressed', async () => {
     const props = createProps();
     const { getByText, getByPlaceholderText } = render(
       <TodoDetail {...props} />,
     );
 
-    const input = getByPlaceholderText('Edit Todo Title');
-    const updatedText = 'Updated todo';
+    const input = getByPlaceholderText('Edit Carrot note Title');
+    const updatedText = 'Updated Carrot note';
 
     fireEvent.changeText(input, updatedText);
 
-    const updateButton = getByText('Update Todo');
+    const updateButton = getByText('Update Carrot note');
     fireEvent.press(updateButton);
 
     await waitFor(() => {

@@ -72,7 +72,7 @@ const TodoDetail = ({ route, navigation }: TodoDetailProps) => {
           style={styles.input}
           value={editTodo}
           onChangeText={(text) => setEditTodo(text.trimStart())}
-          placeholder="Edit Todo Title"
+          placeholder="Edit note"
           maxLength={200}
           multiline={true}
         />
@@ -81,12 +81,12 @@ const TodoDetail = ({ route, navigation }: TodoDetailProps) => {
             disabled={isDisabled}
             styles={styles}
             onPress={!isDisabled ? handleUpdateTodo : undefined}
-            text="Update Todo"
+            text="Update note"
           />
           <TodoActionButton
             styles={[...commonButtonStyles, styles.deleteButton]}
             onPress={confirmDelete}
-            text="Delete Todo"
+            text="Delete note"
             textStyles={[styles.buttonText]}
           />
           <TodoActionButton

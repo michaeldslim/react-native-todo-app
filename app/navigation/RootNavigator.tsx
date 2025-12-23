@@ -52,18 +52,18 @@ const RootNavigator = () => {
           <Stack.Screen
             name="Login"
             component={Login}
-            options={{ title: 'Todo Login' }}
+            options={{ title: 'Carrot Note Login' }}
           />
           <Stack.Screen
             name="Signup"
             component={Signup}
-            options={{ title: 'Todo Signup' }}
+            options={{ title: 'Carrot Note Signup', headerBackVisible: false }}
           />
           <Stack.Screen
             name="List"
             component={List}
             options={({ navigation }) => ({
-              title: 'Todo List',
+              title: 'Carrot Note List',
               headerBackVisible: false,
               headerRight: () => (
                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
@@ -77,12 +77,12 @@ const RootNavigator = () => {
           <Stack.Screen
             name="Detail"
             component={Detail}
-            options={{ title: 'Todo Detail' }}
+            options={{ title: 'Carrot Note Detail' }}
           />
           <Stack.Screen
             name="AdminPage"
             component={AdminPage}
-            options={{ title: 'Admin Page' }}
+            options={{ title: 'Carrot Note Admin Page' }}
           />
         </Stack.Navigator>
       </NavigationContainer>
