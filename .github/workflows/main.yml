@@ -10,7 +10,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: michaeldslim/native-todo-app
+  IMAGE_NAME: michaeldslim/carrot-note-app
   BUILD_NUMBER: ${{ github.run_number }}
 
 jobs:
