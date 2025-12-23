@@ -12,8 +12,7 @@ import Detail from '../screens/TodoDetail';
 import { Todo } from '../screens/types';
 import Login from '../screens/Login';
 import Signup from '../screens/Signup';
-import Logout from '../screens/Logout';
-import AdminPage from '../screens/AdminPage';
+import Settings from '../screens/Settings';
 import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
 
 export type RootStackList = {
@@ -23,14 +22,14 @@ export type RootStackList = {
   Login: undefined;
   Signup: undefined;
   Logout: undefined;
-  AdminPage: undefined;
+  Settings: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackList>();
 
-const AdminButton: React.FC<{ onPress: () => void }> = ({ onPress }) => (
+const SettingsButton: React.FC<{ onPress: () => void }> = ({ onPress }) => (
   <TouchableOpacity onPress={onPress} style={styles.button}>
-    <Text style={styles.buttonText}>Admin</Text>
+    <Text style={styles.buttonText}>⚙ Settings</Text>
   </TouchableOpacity>
 );
 
@@ -67,9 +66,7 @@ const RootNavigator = () => {
               headerBackVisible: false,
               headerRight: () => (
                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                  <AdminButton onPress={() => navigation.navigate('AdminPage')} />
-                  <View style={{ width: 5 }} />
-                  <Logout />
+                  <SettingsButton onPress={() => navigation.navigate('Settings')} />
                 </View>
               ),
             })}
@@ -80,9 +77,9 @@ const RootNavigator = () => {
             options={{ title: 'Carrot Note Detail' }}
           />
           <Stack.Screen
-            name="AdminPage"
-            component={AdminPage}
-            options={{ title: 'Carrot Note Admin Page' }}
+            name="Settings"
+            component={Settings}
+            options={{ title: 'Carrot Note Settings' }}
           />
         </Stack.Navigator>
       </NavigationContainer>

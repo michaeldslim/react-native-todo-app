@@ -10,10 +10,12 @@ import {
   SafeAreaView,
   ScrollView,
   StyleSheet,
+  View,
 } from 'react-native';
 import { CategoryManager } from '../components/categoryManager';
+import Logout from './Logout';
 
-const AdminPage = () => {
+const Settings = () => {
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -21,12 +23,15 @@ const AdminPage = () => {
       keyboardVerticalOffset={Platform.OS === 'ios' ? 90 : 0}
     >
       <SafeAreaView style={styles.safeArea}>
-        <ScrollView
-          style={styles.scrollView}
-          contentContainerStyle={styles.contentContainer}
-        >
-          <CategoryManager />
-        </ScrollView>
+        <View style={styles.container}>
+          <ScrollView
+            style={styles.scrollView}
+            contentContainerStyle={styles.contentContainer}
+          >
+            <CategoryManager />
+          </ScrollView>
+          <Logout />
+        </View>
       </SafeAreaView>
     </KeyboardAvoidingView>
   );
@@ -41,6 +46,10 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
   },
+  container: {
+    flex: 1,
+    justifyContent: 'space-between',
+  },
   scrollView: {
     flex: 1,
   },
@@ -50,4 +59,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default AdminPage;
+export default Settings;

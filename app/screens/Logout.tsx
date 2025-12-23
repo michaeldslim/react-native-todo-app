@@ -40,18 +40,18 @@ const Logout: React.FC = () => {
 
 const styles = StyleSheet.create({
   button: {
-    paddingHorizontal: 5,
-    paddingVertical: 5,
-    backgroundColor: '#fff',
-    borderWidth: 2,
-    borderColor: '#f44336',
-    borderRadius: 15,
+    alignSelf: 'stretch',
+    marginHorizontal: 16,
+    marginBottom: 16,
+    paddingVertical: 16,
+    backgroundColor: '#f44336',
+    borderRadius: 12,
     justifyContent: 'center',
     alignItems: 'center',
   },
   buttonText: {
-    color: '#f44336',
-    fontSize: 14,
+    color: '#fff',
+    fontSize: 16,
     fontWeight: 'bold',
   },
 });
