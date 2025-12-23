@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2025 Michael Lim - React Native Todo App 
+ Copyright (C) 2025 Michael Lim - Carrot Note App 
  This software is free to use, modify, and share under 
  the terms of the GNU General Public License v3.
 */
@@ -31,14 +31,14 @@ import { Todo } from './types';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackList } from '../navigation/RootNavigator';
 import { useIsFocused } from '@react-navigation/native';
-import TodoItem from './TodoItem';
+import NoteItem from './NoteItem';
 import CustomDropdown from './CustomDropdown';
 import { FIREBASE_AUTH } from '../../firebaseConfig';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
-type TodoListProps = NativeStackScreenProps<RootStackList, 'List'>;
+type NoteListProps = NativeStackScreenProps<RootStackList, 'List'>;
 
-const TodoList = ({ navigation }: TodoListProps) => {
+const NoteList = ({ navigation }: NoteListProps) => {
   const isFocused = useIsFocused();
   const [todo, setTodo] = useState<string>('');
   const [todos, setTodos] = useState<Todo[]>([]);
@@ -240,7 +240,7 @@ const TodoList = ({ navigation }: TodoListProps) => {
                 <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
               }
               renderItem={({ item }) => (
-                <TodoItem
+                <NoteItem
                   todo={item}
                   onPress={() =>
                     navigation.navigate('Detail', { todoItem: item })
@@ -425,4 +425,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default TodoList;
+export default NoteList;

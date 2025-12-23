@@ -1,14 +1,14 @@
 /*
- Copyright (C) 2025 Michael Lim - React Native Todo App 
+ Copyright (C) 2025 Michael Lim - Carrot Note App 
  This software is free to use, modify, and share under 
  the terms of the GNU General Public License v3.
 */
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { NavigationContainer } from '@react-navigation/native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import List from '../screens/TodoList';
+import NoteList from '../screens/NoteList';
 import Loading from '../screens/Loading';
-import Detail from '../screens/TodoDetail';
+import NoteDetail from '../screens/NoteDetail';
 import { Todo } from '../screens/types';
 import Login from '../screens/Login';
 import Signup from '../screens/Signup';
@@ -60,7 +60,7 @@ const RootNavigator = () => {
           />
           <Stack.Screen
             name="List"
-            component={List}
+            component={NoteList}
             options={({ navigation }) => ({
               title: 'Carrot Note List',
               headerBackVisible: false,
@@ -73,7 +73,7 @@ const RootNavigator = () => {
           />
           <Stack.Screen
             name="Detail"
-            component={Detail}
+            component={NoteDetail}
             options={{ title: 'Carrot Note Detail' }}
           />
           <Stack.Screen

@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2025 Michael Lim - React Native Todo App 
+ Copyright (C) 2025 Michael Lim - Carrot Note App 
  This software is free to use, modify, and share under 
  the terms of the GNU General Public License v3.
 */
@@ -18,13 +18,13 @@ import Animated, {
 const SWIPE_THRESHOLD = -65;
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
-interface TodoItemProps {
+interface NoteItemProps {
   todo: Todo;
   onPress: () => void;
   confirmDelete: (todoId: string) => void;
 }
 
-const TodoItem: React.FC<TodoItemProps> = ({
+const NoteItem: React.FC<NoteItemProps> = ({
   todo,
   onPress,
   confirmDelete,
@@ -219,4 +219,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default TodoItem;
+export default NoteItem;
