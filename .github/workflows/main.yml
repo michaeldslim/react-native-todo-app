@@ -56,7 +56,7 @@ jobs:
             ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
 
   android-build:
-    name: Build Android release APK and signedAAB
+    name: Build Android release APK and signed AAB
     runs-on: ubuntu-latest
     needs: build-and-push
 
